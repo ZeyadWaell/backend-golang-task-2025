@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EasyOrder.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9d82e88e67111bb79643a39746617627ed2f30c6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+85f7fe142fd4be06365a2251c340f7d4842d1c4b")]
 [assembly: System.Reflection.AssemblyProductAttribute("EasyOrder.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EasyOrder.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
