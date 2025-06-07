@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net9.0": {}
+    "net9.0": {
+      "EasyOrder.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/EasyOrder.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/EasyOrder.Domain.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "EasyOrder.Domain/1.0.0": {
+      "type": "project",
+      "path": "../EasyOrder.Domain/EasyOrder.Domain.csproj",
+      "msbuildProject": "../EasyOrder.Domain/EasyOrder.Domain.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net9.0": []
+    "net9.0": [
+      "EasyOrder.Domain >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\sayed.z\\.nuget\\packages\\": {},
@@ -38,7 +57,11 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Domain\\EasyOrder.Domain.csproj": {
+              "projectPath": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Domain\\EasyOrder.Domain.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

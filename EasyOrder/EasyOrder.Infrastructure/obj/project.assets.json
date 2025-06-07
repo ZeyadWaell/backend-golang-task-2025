@@ -1,11 +1,135 @@
 {
   "version": 3,
   "targets": {
-    "net9.0": {}
+    "net9.0": {
+      "Microsoft.AspNetCore.OpenApi/9.0.5": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.OpenApi": "1.6.17"
+        },
+        "compile": {
+          "lib/net9.0/Microsoft.AspNetCore.OpenApi.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.AspNetCore.OpenApi.dll": {
+            "related": ".xml"
+          }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
+      "Microsoft.OpenApi/1.6.17": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Microsoft.OpenApi.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.OpenApi.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
+      "EasyOrder.Api/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "EasyOrder.Application": "1.0.0",
+          "Microsoft.AspNetCore.OpenApi": "9.0.5"
+        },
+        "compile": {
+          "bin/placeholder/EasyOrder.Api.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/EasyOrder.Api.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
+      "EasyOrder.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "EasyOrder.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/EasyOrder.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/EasyOrder.Application.dll": {}
+        }
+      },
+      "EasyOrder.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/EasyOrder.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/EasyOrder.Domain.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "Microsoft.AspNetCore.OpenApi/9.0.5": {
+      "sha512": "yZLOciYlpaOO/mHPOpgeSZTv8Lc7fOOVX40eWJJoGs/S9Ny9CymDuKKQofGE9stXGGM9EEnnuPeq0fhR8kdFfg==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.openapi/9.0.5",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net9.0/Microsoft.AspNetCore.OpenApi.dll",
+        "lib/net9.0/Microsoft.AspNetCore.OpenApi.xml",
+        "microsoft.aspnetcore.openapi.9.0.5.nupkg.sha512",
+        "microsoft.aspnetcore.openapi.nuspec"
+      ]
+    },
+    "Microsoft.OpenApi/1.6.17": {
+      "sha512": "Le+kehlmrlQfuDFUt1zZ2dVwrhFQtKREdKBo+rexOwaCoYP0/qpgT9tLxCsZjsgR5Itk1UKPcbgO+FyaNid/bA==",
+      "type": "package",
+      "path": "microsoft.openapi/1.6.17",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/netstandard2.0/Microsoft.OpenApi.dll",
+        "lib/netstandard2.0/Microsoft.OpenApi.pdb",
+        "lib/netstandard2.0/Microsoft.OpenApi.xml",
+        "microsoft.openapi.1.6.17.nupkg.sha512",
+        "microsoft.openapi.nuspec"
+      ]
+    },
+    "EasyOrder.Api/1.0.0": {
+      "type": "project",
+      "path": "../EasyOrder/EasyOrder.Api.csproj",
+      "msbuildProject": "../EasyOrder/EasyOrder.Api.csproj"
+    },
+    "EasyOrder.Application/1.0.0": {
+      "type": "project",
+      "path": "../EasyOrder.Application/EasyOrder.Application.csproj",
+      "msbuildProject": "../EasyOrder.Application/EasyOrder.Application.csproj"
+    },
+    "EasyOrder.Domain/1.0.0": {
+      "type": "project",
+      "path": "../EasyOrder.Domain/EasyOrder.Domain.csproj",
+      "msbuildProject": "../EasyOrder.Domain/EasyOrder.Domain.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net9.0": []
+    "net9.0": [
+      "EasyOrder.Api >= 1.0.0",
+      "EasyOrder.Application >= 1.0.0",
+      "EasyOrder.Domain >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\sayed.z\\.nuget\\packages\\": {},
@@ -38,7 +162,17 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Application\\EasyOrder.Application.csproj": {
+              "projectPath": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Application\\EasyOrder.Application.csproj"
+            },
+            "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Domain\\EasyOrder.Domain.csproj": {
+              "projectPath": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Domain\\EasyOrder.Domain.csproj"
+            },
+            "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder\\EasyOrder.Api.csproj": {
+              "projectPath": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder\\EasyOrder.Api.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

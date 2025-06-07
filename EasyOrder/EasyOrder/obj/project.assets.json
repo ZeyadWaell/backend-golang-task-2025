@@ -33,6 +33,29 @@
             "related": ".pdb;.xml"
           }
         }
+      },
+      "EasyOrder.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "EasyOrder.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/EasyOrder.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/EasyOrder.Application.dll": {}
+        }
+      },
+      "EasyOrder.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/EasyOrder.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/EasyOrder.Domain.dll": {}
+        }
       }
     }
   },
@@ -67,10 +90,21 @@
         "microsoft.openapi.1.6.17.nupkg.sha512",
         "microsoft.openapi.nuspec"
       ]
+    },
+    "EasyOrder.Application/1.0.0": {
+      "type": "project",
+      "path": "../EasyOrder.Application/EasyOrder.Application.csproj",
+      "msbuildProject": "../EasyOrder.Application/EasyOrder.Application.csproj"
+    },
+    "EasyOrder.Domain/1.0.0": {
+      "type": "project",
+      "path": "../EasyOrder.Domain/EasyOrder.Domain.csproj",
+      "msbuildProject": "../EasyOrder.Domain/EasyOrder.Domain.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net9.0": [
+      "EasyOrder.Application >= 1.0.0",
       "Microsoft.AspNetCore.OpenApi >= 9.0.5"
     ]
   },
@@ -105,7 +139,11 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Application\\EasyOrder.Application.csproj": {
+              "projectPath": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Application\\EasyOrder.Application.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

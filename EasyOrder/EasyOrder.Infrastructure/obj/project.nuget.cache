@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "5I44zq0UMkI=",
+  "dgSpecHash": "gY+GUBy6jJM=",
   "success": true,
   "projectFilePath": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Infrastructure\\EasyOrder.Infrastructure.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\sayed.z\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.5\\microsoft.aspnetcore.openapi.9.0.5.nupkg.sha512",
+    "C:\\Users\\sayed.z\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
   "logs": []
 }
