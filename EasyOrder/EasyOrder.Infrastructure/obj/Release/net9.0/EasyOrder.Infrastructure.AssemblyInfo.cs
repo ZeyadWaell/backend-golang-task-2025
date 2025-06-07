@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EasyOrder.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+250e399a08794ad519b9c95f3ce08deba188f633")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d4e1961461a7032dde6348a4c8b1187b271f411c")]
 [assembly: System.Reflection.AssemblyProductAttribute("EasyOrder.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EasyOrder.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
