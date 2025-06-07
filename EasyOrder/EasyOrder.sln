@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.36121.58
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.Api", "EasyOrder\EasyOrder.Api.csproj", "{9178E9C5-97FC-466A-BD05-C677E24429A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.Application", "EasyOrder.Application\EasyOrder.Application.csproj", "{A36B3576-20B5-4A41-A9DA-BAFF395D2CA5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.Application.Commands", "EasyOrder.Application\EasyOrder.Application.Commands.csproj", "{A36B3576-20B5-4A41-A9DA-BAFF395D2CA5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.Domain", "EasyOrder.Domain\EasyOrder.Domain.csproj", "{7F2E8D5C-9537-49BF-B89C-1A6BC6D3E7AA}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.Application.Tests", "EasyOrder.Application.Tests\EasyOrder.Application.Tests.csproj", "{FA081070-36F3-4DAF-B83D-AEAF236DAD31}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.Infrastructure.Tests", "EasyOrder.Infrastructure.Tests\EasyOrder.Infrastructure.Tests.csproj", "{C0ABA309-04B2-4F73-AD77-097E30E0648C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.Application.Queries", "EasyOrder.Application.Queries\EasyOrder.Application.Queries.csproj", "{F4193A89-5CEE-40EB-8BF5-1E21530DC3A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +51,10 @@ Global
 		{C0ABA309-04B2-4F73-AD77-097E30E0648C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0ABA309-04B2-4F73-AD77-097E30E0648C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0ABA309-04B2-4F73-AD77-097E30E0648C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4193A89-5CEE-40EB-8BF5-1E21530DC3A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4193A89-5CEE-40EB-8BF5-1E21530DC3A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4193A89-5CEE-40EB-8BF5-1E21530DC3A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4193A89-5CEE-40EB-8BF5-1E21530DC3A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 		{76059157-D90B-42F3-B452-589B11BB42EF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{FA081070-36F3-4DAF-B83D-AEAF236DAD31} = {D15D52ED-ABE1-4F46-B24C-954CE8082355}
 		{C0ABA309-04B2-4F73-AD77-097E30E0648C} = {D15D52ED-ABE1-4F46-B24C-954CE8082355}
+		{F4193A89-5CEE-40EB-8BF5-1E21530DC3A3} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {27E7B310-6EDB-44EC-A3E8-38884DA8DBB3}

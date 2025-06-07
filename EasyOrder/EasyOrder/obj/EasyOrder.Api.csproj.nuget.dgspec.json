@@ -4,12 +4,12 @@
     "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder\\EasyOrder.Api.csproj": {}
   },
   "projects": {
-    "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Application\\EasyOrder.Application.csproj": {
+    "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Application\\EasyOrder.Application.Commands.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Application\\EasyOrder.Application.csproj",
-        "projectName": "EasyOrder.Application",
-        "projectPath": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Application\\EasyOrder.Application.csproj",
+        "projectUniqueName": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Application\\EasyOrder.Application.Commands.csproj",
+        "projectName": "EasyOrder.Application.Commands",
+        "projectPath": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Application\\EasyOrder.Application.Commands.csproj",
         "packagesPath": "C:\\Users\\sayed.z\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Application\\obj\\",
         "projectStyle": "PackageReference",
@@ -166,8 +166,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Application\\EasyOrder.Application.csproj": {
-                "projectPath": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Application\\EasyOrder.Application.csproj"
+              "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Application\\EasyOrder.Application.Commands.csproj": {
+                "projectPath": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Application\\EasyOrder.Application.Commands.csproj"
               }
             }
           }

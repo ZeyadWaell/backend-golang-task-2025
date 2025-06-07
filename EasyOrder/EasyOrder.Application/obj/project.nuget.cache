@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "GKx97NG3UZ0=",
+  "dgSpecHash": "xJf/9WV/LQs=",
   "success": true,
-  "projectFilePath": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Application\\EasyOrder.Application.csproj",
+  "projectFilePath": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder.Application\\EasyOrder.Application.Commands.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
