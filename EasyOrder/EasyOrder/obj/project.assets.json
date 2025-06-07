@@ -81,9 +81,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder\\EasyOrder.csproj",
-      "projectName": "EasyOrder",
-      "projectPath": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder\\EasyOrder.csproj",
+      "projectUniqueName": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder\\EasyOrder.Api.csproj",
+      "projectName": "EasyOrder.Api",
+      "projectPath": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder\\EasyOrder.Api.csproj",
       "packagesPath": "C:\\Users\\sayed.z\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\sayed.z\\source\\repos\\ZeyadWaell\\backend-golang-task-2025\\EasyOrder\\EasyOrder\\obj\\",
       "projectStyle": "PackageReference",
