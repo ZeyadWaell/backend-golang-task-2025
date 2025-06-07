@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EasyOrder.Application.Queries")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+555274c268369ac91bf5ffb6a9df4f5b53548d91")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+250e399a08794ad519b9c95f3ce08deba188f633")]
 [assembly: System.Reflection.AssemblyProductAttribute("EasyOrder.Application.Queries")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EasyOrder.Application.Queries")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
