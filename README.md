@@ -1,119 +1,44 @@
-https://ibb.co/zTQWnM48
+# E-Commerce CQRS + Kafka Overview
 
+![Architecture Diagram](https://ibb.co/zTQWnM48)
 
-# E-Commerce Microservices Platform  
-**.NET · CQRS · Kafka · Ocelot API Gateway**
+A minimalist .NET microservices design using CQRS and Kafka for order-driven workflows.
 
----
+## 🚀 Services
 
-## 📖 Overview  
-This repository illustrates a sample e-commerce platform built on a microservices architecture in .NET. It uses CQRS (Command–Query Responsibility Segregation) to split write and read models, and Apache Kafka as the event bus so downstream services can react asynchronously. All client traffic (Blazor, MVC, React, Angular) is funneled through an Ocelot API Gateway.
+- **User**  
+  - _Command API_ → Register/login customers & admins  
+  - _Query API_ → Read user profiles  
 
----
+- **Product**  
+  - _Command API_ → Manage products & inventory rules  
+  - _Query API_ → Read product catalog  
 
-## 🏗 Architecture Diagram  
-![High-level Architecture](./docs/architecture.png)  
-*(See `/docs/architecture.png` for a sketch of service boundaries, DBs, and Kafka topics.)*
+- **Order**  
+  - _Command API_ → Create/cancel orders → writes to **Order_WriteDB** + publishes `OrderCreated` to Kafka  
+  - _Query API_ → Read orders by status, customer → built from event projections  
 
----
+- **Payment**  
+  - Subscribes to `OrderCreated` → processes payment → emits `PaymentSucceeded`/`PaymentFailed`  
 
-## 🔧 Components  
+- **Inventory**  
+  - Subscribes to `OrderCreated` → decrements stock → emits `InventoryLow`  
 
-1. **API Gateway**  
-   - **Ocelot** routes all incoming HTTP traffic from WebApps → appropriate microservice.
+- **Notification**  
+  - Subscribes to order/payment/inventory events → sends emails/SMS/push  
 
-2. **Command-Side Services**  
-   Each service owns its own **WriteDB** and exposes only command (CUD) endpoints.  
-   - **Order.Command.API**  
-     - Handles `CreateOrder`, `CancelOrder`, etc.  
-     - Writes to **Order_WriteDB**  
-     - Publishes domain events to **Kafka** (topic: `order-events`)  
-   - **Product.Command.API**  
-     - Manages product CRUD, inventory thresholds  
-     - Writes to **Product_WriteDB**  
-     - (No Kafka emission)  
-   - **Customer.Command.API**  
-     - Manages customer profiles, addresses  
-     - Writes to **Customer_WriteDB**  
-   - **Basket.Command.API**  
-     - Manages shopping carts  
-     - Writes to **Basket_WriteDB**  
-   - **Discount.gRPC**  
-     - Applies discount rules  
-     - Writes to **Discount_WriteDB**  
+- **AuditLog**  
+  - Subscribes to all domain events → append-only log in **AuditLogs_ReadDB**  
 
-3. **Query-Side Services**  
-   Each service owns its own **ReadDB** and subscribes to one or more Kafka topics to keep its read model up to date.  
-   - **Order.Query.API**  
-     - Serves order lookups by customer, status, date range  
-     - Maintains **Order_ReadDB** via projections of `OrderCreated`, `OrderConfirmed`, etc.  
-   - **Inventory.Service**  
-     - Subscribes to `order-events`  
-     - Decrements/increments stock in **Inventory_ReadDB**  
-     - Emits `InventoryLow` when thresholds breach  
-   - **Notification.Service**  
-     - Subscribes to `order-events`, `payment-events`, `inventory-events`  
-     - Sends emails/SMS/push for order confirmations, payment successes/failures, low-stock alerts  
-   - **AuditLogs.Service**  
-     - Subscribes to **all** domain events  
-     - Appends an immutable audit trail in **AuditLogs_ReadDB**  
+## 🔄 Event Flow
 
-4. **Event Bus**  
-   - **Apache Kafka** cluster with topics:  
-     - `order-events`  
-     - `payment-events`  
-     - `inventory-events`  
-     - *(extendable for shipping-events, notification-events, etc.)*
+1. **Create Order** → write DB & `OrderCreated` → Kafka  
+2. **Inventory** ⤷ update stock  
+3. **Payment** ⤷ charge customer  
+4. **Notification** ⤷ send alerts  
+5. **AuditLog** ⤷ persist event  
+6. **Query APIs** ⤷ project read models  
 
 ---
 
-## 🔄 Typical Event Flow  
-
-1. **Client** calls `POST /orders` → **Order.Command.API**  
-2. **Order.Command.API**  
-   - Persists to **Order_WriteDB**  
-   - Publishes `OrderCreated` → **Kafka: order-events**  
-3. **Subscribers** react:  
-   - **Inventory.Service**  
-     - On `OrderCreated` → decrement stock → persist to **Inventory_ReadDB**  
-     - If low, publish `InventoryLow`  
-   - **Notification.Service**  
-     - On `OrderCreated` → send confirmation email  
-   - **AuditLogs.Service**  
-     - On every event → append to **AuditLogs_ReadDB**  
-4. **Payment.Service**  
-   - (optionally) consumes `OrderCreated` → attempt charge → publish `PaymentSucceeded`/`PaymentFailed`  
-5. **Order.Command.API**  
-   - Consumes `PaymentSucceeded` → update **Order_WriteDB** status → publish `OrderConfirmed`  
-6. **Order.Query.API**  
-   - Consumes `OrderConfirmed` → update **Order_ReadDB**  
-   - Serves `GET /orders?customerId=…`  
-
----
-
-## 🚀 Getting Started  
-
-1. **Prerequisites**  
-   - .NET 7 SDK  
-   - Docker & Docker Compose  
-   - Kafka cluster (you can spin up a local one via `docker-compose up kafka zookeeper`)  
-   - SQL Server instances (Docker containers or Azure SQL)  
-
-2. **Configuration**  
-   - Each microservice reads its DB connection string from `appsettings.json` or environment vars.  
-   - Kafka broker address configured in `KafkaSettings:BootstrapServers`.  
-   - Ocelot gateway routes defined in `ocelot.json`.  
-
-3. **Run Locally**  
-   ```bash
-   # Start Kafka & Zookeeper
-   docker-compose up -d zookeeper kafka
-
-   # Launch microservices
-   cd src/Order.Command.API && dotnet run
-   cd src/Order.Query.API   && dotnet run
-   cd src/Inventory.Service  && dotnet run
-   # …and so on for Product, Customer, Basket, Notification, AuditLogs
-
-   # Start API Gateway
-   cd src/ApiGateway && dotnet run
+> Publish once, subscribe many—decoupled, scalable, and audit-friendly.  
