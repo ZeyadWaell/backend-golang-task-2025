@@ -1,39 +1,44 @@
-# 🌩️ High-Throughput Order Processing System
+# E-Commerce CQRS + Kafka Overview
 
-![Architecture Diagram](docs/architecture.png)
+![Image Alt](https://github.com/ZeyadWaell/backend-golang-task-2025/blob/master/494828515_1783759872577298_5067930022010366235_n.jpg)
 
-A proof-of-concept **.NET** microservices solution that demonstrates how to handle **very high-demand order volumes** using **CQRS**, **Domain-Driven Design**, and industry-proven design patterns.  
+A minimalist .NET microservices design using CQRS and Kafka for order-driven workflows.
+
+## 🚀 Services
+
+- **User**  
+  - _Command API_ → Register/login customers & admins  
+  - _Query API_ → Read user profiles  
+
+- **Product**  
+  - _Command API_ → Manage products & inventory rules  
+  - _Query API_ → Read product catalog  
+
+- **Order**  
+  - _Command API_ → Create/cancel orders → writes to **Order_WriteDB** + publishes `OrderCreated` to Kafka  
+  - _Query API_ → Read orders by status, customer → built from event projections  
+
+- **Payment**  
+  - Subscribes to `OrderCreated` → processes payment → emits `PaymentSucceeded`/`PaymentFailed`  
+
+- **Inventory**  
+  - Subscribes to `OrderCreated` → decrements stock → emits `InventoryLow`  
+
+- **Notification**  
+  - Subscribes to order/payment/inventory events → sends emails/SMS/push  
+
+- **AuditLog**  
+  - Subscribes to all domain events → append-only log in **AuditLogs_ReadDB**  
+
+## 🔄 Event Flow
+
+1. **Create Order** → write DB & `OrderCreated` → Kafka  
+2. **Inventory** ⤷ update stock  
+3. **Payment** ⤷ charge customer  
+4. **Notification** ⤷ send alerts  
+5. **AuditLog** ⤷ persist event  
+6. **Query APIs** ⤷ project read models  
 
 ---
 
-## 🚀 Motivation
-
-Online retailers and marketplaces often face extreme spikes in order volume (flash sales, product launches, Black Friday). Synchronous CRUD APIs struggle to keep up, leading to slow responses, timeouts, and lost revenue.  
-This project shows how to:
-
-- **Scale reads and writes independently** (CQRS)
-- **Decouple services** with asynchronous messaging
-- **Maintain data consistency** across microservices
-- **Apply resilient design patterns** (Circuit Breaker, Retry, Saga, Factory, Repository, Unit of Work)
-
----
-
-## 🏗️ Architecture
-
-```text
-┌───────────────┐      ┌──────────────┐      ┌─────────────────┐
-│   API Gateway │◀────▶│ OrderService │◀────▶│ InventoryService│
-│ (Ocelot)      │      │  (Writes)    │      │  (Reads & Stock)│
-└───────────────┘      └──────────────┘      └─────────────────┘
-        │                     │                       │
-        │───────────▶────────▶└─▶─► Kafka/EventBus────┘
-        │                            ▲
-        │                            │
-        │                ┌────────────────────────┐
-        │                │ ShippingService (Saga) │
-        │                └────────────────────────┘
-        ▼
-┌─────────────────┐
-│   PaymentService│
-│ (Idempotent API)│
-└─────────────────┘
+> Publish once, subscribe many—decoupled, scalable, and audit-friendly.  
