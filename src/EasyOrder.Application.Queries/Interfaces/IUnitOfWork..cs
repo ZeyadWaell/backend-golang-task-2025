@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EasyOrderAdmin.Application.Queries.Interfaces
 {
-    internal interface IUnitOfWork
+    public interface IUnitOfWork
     {
     }
 }
