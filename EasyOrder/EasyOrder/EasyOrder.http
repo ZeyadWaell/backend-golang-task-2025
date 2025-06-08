@@ -1,6 +1,0 @@
-@EasyOrder_HostAddress = http://localhost:5142
-
-GET {{EasyOrder_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

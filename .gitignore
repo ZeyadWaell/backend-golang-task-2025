@@ -1,1 +1,6 @@
-.vs/ 
+# Visual Studio workspace files
+.vs/
+
+# Build outputs
+**/bin/
+**/obj/

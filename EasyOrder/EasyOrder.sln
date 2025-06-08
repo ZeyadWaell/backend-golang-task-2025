@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.Domain", "EasyOrd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.Infrastructure", "EasyOrder.Infrastructure\EasyOrder.Infrastructure.csproj", "{76059157-D90B-42F3-B452-589B11BB42EF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src_order", "src_order", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OrderTest", "OrderTest", "{D15D52ED-ABE1-4F46-B24C-954CE8082355}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.Application.Tests", "EasyOrder.Application.Tests\EasyOrder.Application.Tests.csproj", "{FA081070-36F3-4DAF-B83D-AEAF236DAD31}"
@@ -20,10 +18,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.Infrastructure.Tests", "EasyOrder.Infrastructure.Tests\EasyOrder.Infrastructure.Tests.csproj", "{C0ABA309-04B2-4F73-AD77-097E30E0648C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.Application.Queries", "EasyOrder.Application.Queries\EasyOrder.Application.Queries.csproj", "{F4193A89-5CEE-40EB-8BF5-1E21530DC3A3}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src_product", "src_product", "{F338FCE6-CAE9-43DF-BDB8-A029DCDBEF90}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src_user", "src_user", "{D0C73A11-7529-422F-8B90-80538E7FAB0E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderAdmin", "EasyOrderAdmin\EasyOrderAdmin.csproj", "{C1FBD970-D65C-4A50-B325-F28FBA7E7AFB}"
 EndProject
