@@ -7,14 +7,30 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Persistence\Migrations\**" />
+    <EmbeddedResource Remove="Persistence\Migrations\**" />
+    <None Remove="Persistence\Migrations\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Extensions\" />
     <Folder Include="Messaging\" />
-    <Folder Include="Persistence\Context\" />
     <Folder Include="Persistence\Mappings\" />
-    <Folder Include="Persistence\Migrations\" />
-    <Folder Include="Persistence\Repositories\" />
     <Folder Include="Services\" />
     <Folder Include="Settings\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EasyOrder.Application.Contracts\EasyOrder.Application.Contracts.csproj" />
+    <ProjectReference Include="..\EasyOrder.Domain\EasyOrder.Domain.csproj" />
   </ItemGroup>
 
 </Project>
