@@ -1,6 +1,6 @@
 # E-Commerce CQRS + Kafka Overview
 
-![Image Alt](https://ibb.co/zTQWnM48)
+![Image Alt](https://github.com/ZeyadWaell/backend-golang-task-2025/blob/master/494828515_1783759872577298_5067930022010366235_n.jpg)
 
 A minimalist .NET microservices design using CQRS and Kafka for order-driven workflows.
 
