@@ -1,5 +1,5 @@
+https://ibb.co/zTQWnM48
 
-![Uploading 494828515_1783759872577298_5067930022010366235_n.jpg…]()
 
 # E-Commerce Microservices Platform  
 **.NET · CQRS · Kafka · Ocelot API Gateway**
