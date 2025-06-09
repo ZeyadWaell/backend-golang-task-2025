@@ -18,14 +18,13 @@ namespace EasyOrder.Infrastructure.Persistence.Repositories.Main
         private readonly WriteDbContext _writeContext;
         private bool _disposed;
 
-        public IOrderRepository Orders { get; }
+        public IOrderRepository OrdersRepository { get; }
 
         public UnitOfWork(ReadDbContext readContext, WriteDbContext writeContext)
         {
             _readContext = readContext;
             _writeContext = writeContext;
-
-            Orders = new OrderRepository(_readContext, _writeContext);
+            OrdersRepository = new OrderRepository(_readContext, _writeContext);
         }
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

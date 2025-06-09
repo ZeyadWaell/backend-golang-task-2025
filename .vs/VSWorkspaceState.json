@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\src",
+    "\\src\\EasyOrderTask",
+    "\\src\\EasyOrderTask\\Controllers"
   ],
-  "SelectedNode": "\\C:\\Users\\sayed.z\\Source\\Repos\\backend-golang-task-2025",
+  "SelectedNode": "\\src\\EasyOrderTask\\Controllers\\OrderController.cs",
   "PreviewInSolutionExplorer": false
 }

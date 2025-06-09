@@ -10,7 +10,7 @@ namespace EasyOrderAdmin.Application.Queries.Interfaces
     public interface IUnitOfWork
     {
 
-        IOrderRepository Orders { get; }
+        IOrderRepository OrdersRepository { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }
