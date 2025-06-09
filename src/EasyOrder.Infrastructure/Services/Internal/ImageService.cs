@@ -1,4 +1,5 @@
-﻿using EasyOrder.Application.Contracts.Responses;
+﻿using EasyOrder.Application.Contracts.InterfaceCommon;
+using EasyOrder.Application.Contracts.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
