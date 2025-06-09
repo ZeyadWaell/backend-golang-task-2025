@@ -11,10 +11,6 @@ namespace EasyOrderAdmin.Application.Queries.Interfaces
     {
 
         IOrderRepository Orders { get; }
-
-        /// <summary>
-        /// Flushes all pending changes to the write database.
-        /// </summary>
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

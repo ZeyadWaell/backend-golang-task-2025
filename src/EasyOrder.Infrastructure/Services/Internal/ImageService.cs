@@ -1,13 +1,9 @@
 ﻿using EasyOrder.Application.Contracts.InterfaceCommon;
 using EasyOrder.Application.Contracts.Responses;
+using EasyOrder.Application.Contracts.Responses.Global;
+using EasyOrder.Application.Contracts.Responses.Options;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EasyOrder.Infrastructure.Services.Internal
 {
@@ -22,8 +18,6 @@ namespace EasyOrder.Infrastructure.Services.Internal
             _folderPath = opts.Value.ImageFolder;
             if (!Directory.Exists(_folderPath)) Directory.CreateDirectory(_folderPath);
         }
-
-
         public async Task<BaseApiResponse> UploadAsync(IFormFile file)
         {
             if (file is null || file.Length == 0)
