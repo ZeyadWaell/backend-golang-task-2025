@@ -1,4 +1,4 @@
-﻿using EasyOrder.Application.Contracts.Responses.Global;
+﻿using EasyOrder.Application.Contracts.DTOs.Responses.Global;
 using EasyOrder.Application.Queries.DTOs;
 using MediatR;
 using System;

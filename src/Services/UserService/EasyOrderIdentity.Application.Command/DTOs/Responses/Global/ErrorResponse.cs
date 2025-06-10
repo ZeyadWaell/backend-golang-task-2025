@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EasyOrder.Application.Contracts.Responses.Global
+namespace EasyOrderIdentity.Application.DTOs.Responses.Global
 {
     public class ErrorResponse : BaseApiResponse
     {

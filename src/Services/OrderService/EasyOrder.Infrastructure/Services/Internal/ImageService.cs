@@ -1,7 +1,8 @@
-﻿using EasyOrder.Application.Contracts.Interfaces.InternalServices;
-using EasyOrder.Application.Contracts.Responses;
+﻿using EasyOrder.Application.Contracts.DTOs.Responses;
+using EasyOrder.Application.Contracts.DTOs.Responses.Global;
+using EasyOrder.Application.Contracts.DTOs.Responses.Options;
+using EasyOrder.Application.Contracts.Interfaces.InternalServices;
 using EasyOrder.Application.Contracts.Responses.Global;
-using EasyOrder.Application.Contracts.Responses.Options;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 

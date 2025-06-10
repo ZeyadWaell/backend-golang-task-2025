@@ -1,5 +1,5 @@
-﻿using EasyOrder.Application.Contracts.Interfaces.Services;
-using EasyOrder.Application.Contracts.Responses.Global;
+﻿using EasyOrder.Application.Contracts.DTOs.Responses.Global;
+using EasyOrder.Application.Contracts.Interfaces.Services;
 using EasyOrder.Application.Queries.Queries;
 using MediatR;
 using Microsoft.VisualBasic;

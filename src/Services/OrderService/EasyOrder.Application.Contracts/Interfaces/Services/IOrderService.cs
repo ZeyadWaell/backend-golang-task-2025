@@ -1,6 +1,6 @@
 ﻿using EasyOrder.Application.Contracts.DTOs;
+using EasyOrder.Application.Contracts.DTOs.Responses.Global;
 using EasyOrder.Application.Contracts.Filters;
-using EasyOrder.Application.Contracts.Responses.Global;
 using System;
 using System.Collections.Generic;
 using System.Linq;

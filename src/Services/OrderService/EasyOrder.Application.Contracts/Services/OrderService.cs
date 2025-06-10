@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EasyOrder.Application.Contracts.DTOs;
+using EasyOrder.Application.Contracts.DTOs.Responses.Global;
 using EasyOrder.Application.Contracts.Filters;
 using EasyOrder.Application.Contracts.Interfaces.InternalServices;
 using EasyOrder.Application.Contracts.Interfaces.Main;

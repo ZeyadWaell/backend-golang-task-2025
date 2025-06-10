@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EasyOrder.Application.Contracts.Responses.Options
+namespace EasyOrder.Application.Contracts.DTOs.Responses.Options
 {
     public class UploadSettings
     {
