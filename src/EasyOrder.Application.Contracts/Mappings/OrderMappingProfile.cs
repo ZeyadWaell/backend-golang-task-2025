@@ -16,6 +16,8 @@ namespace EasyOrder.Application.Queries.Mappings
     {
         public OrderMappingProfile()
         {
+
+            CreateMap<OrderStatusDto, Order>();
             CreateMap<CreateOrderDto, Order>()
                 .ForMember(d => d.CreatedBy, opt => opt.Ignore())
                 .ForMember(d => d.TotalAmount, opt => opt.Ignore())

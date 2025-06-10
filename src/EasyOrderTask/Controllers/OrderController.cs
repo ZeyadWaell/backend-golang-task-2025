@@ -52,7 +52,7 @@ namespace EasyOrder.Api.Controllers
         [HttpGet(OrderRoutes.GetStatus)]
         public async Task<IActionResult> GetOrderStatus(int id)
         {
-            var query = new CancelOrderCommand(id);
+            var query = new GetOrderStatusQuery(id);
             var response = await _mediator.Send(query);
             return StatusCode(response.StatusCode, response);
         }

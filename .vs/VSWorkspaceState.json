@@ -2,9 +2,11 @@
   "ExpandedNodes": [
     "",
     "\\src",
+    "\\src\\EasyOrder.Application.Queries",
+    "\\src\\EasyOrder.Application.Queries\\Handlers",
     "\\src\\EasyOrderTask",
     "\\src\\EasyOrderTask\\Controllers"
   ],
-  "SelectedNode": "\\src\\EasyOrderTask\\Controllers\\OrderController.cs",
+  "SelectedNode": "\\src\\EasyOrder.Application.Queries\\Handlers\\GetAllOrdersQueryHandler.cs",
   "PreviewInSolutionExplorer": false
 }

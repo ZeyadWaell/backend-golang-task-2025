@@ -55,23 +55,11 @@ namespace EasyOrder.Application.Queries.Services
             if (dto.Items.Any(i => i.Quantity <= 0))
                 return ErrorResponse.BadRequest("Each item quantity must be at least 1");
 
-
             var order = _mapper.Map<Order>(dto);
-            order.CreatedBy = _currentUserService.UserId;
 
-            try
-            {
-                await _unitOfWork.OrdersRepository.AddAsync(order);
-                var saved = await _unitOfWork.SaveChangesAsync();
-                if (saved <= 0)
-                    return ErrorResponse.InternalServerError("Failed to create order, please try again");
-            }
-            catch (DbUpdateException ex)
-            {
-                return ErrorResponse.InternalServerError("An error occurred while saving your order");
-            }
+            await _unitOfWork.OrdersRepository.AddAsync(order);
+            var saved = await _unitOfWork.SaveChangesAsync();
 
-            // 4) Return the newly‐created order
             var resultDto = _mapper.Map<OrderDetailsDto>(order);
             return new SuccessResponse<object>(
                 message: "Order created successfully",
@@ -94,6 +82,16 @@ namespace EasyOrder.Application.Queries.Services
             await _unitOfWork.SaveChangesAsync();
             return new SuccessResponse<object>("Order cancelled successfully", null, 200);
 
+        }
+        public async Task<BaseApiResponse> GetOrderStatus(int id)
+        {
+            var order = await _unitOfWork.OrdersRepository.GetAsync(x => x.Id == id && x.CreatedBy == _currentUserService.UserId);
+            if (order == null)
+                return ErrorResponse.NotFound("Order not found");
+
+            var resultDto = _mapper.Map<OrderStatusDto>(order);
+
+            return new SuccessResponse<object>("Order status retrieved successfully", resultDto, 200);
         }
     }
 }
