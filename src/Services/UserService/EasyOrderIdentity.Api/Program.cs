@@ -1,22 +1,30 @@
+using EasyOrderIdentity.Infrastructure.Persistence.Context;
+using EasyOrderIdentity.Infrastructure.Seed.Identity;
+using EasyOrderIdentity.Domain.Entites;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace EasyOrderIdentity.Api
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            using (var scope = app.Services.CreateScope())
+            {
+                var seeder = scope.ServiceProvider.GetRequiredService<IdentitySeeder>();
+                await seeder.SeedAsync();
+            }
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -25,8 +33,8 @@ namespace EasyOrderIdentity.Api
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication(); 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
