@@ -1,4 +1,4 @@
-﻿using EasyOrder.Application.Contracts.InterfaceCommon;
+﻿using EasyOrder.Application.Contracts.Interfaces.InternalServices;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;

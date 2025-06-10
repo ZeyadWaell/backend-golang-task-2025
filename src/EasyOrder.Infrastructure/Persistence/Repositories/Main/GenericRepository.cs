@@ -1,5 +1,5 @@
 ﻿using EasyOrder.Application.Contracts.Filters;
-using EasyOrder.Application.Contracts.InterfaceCommon;
+using EasyOrder.Application.Contracts.Interfaces.Main;
 using EasyOrder.Domain.Common;
 using EasyOrder.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;

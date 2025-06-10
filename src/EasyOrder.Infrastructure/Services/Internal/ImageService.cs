@@ -1,4 +1,4 @@
-﻿using EasyOrder.Application.Contracts.InterfaceCommon;
+﻿using EasyOrder.Application.Contracts.Interfaces.InternalServices;
 using EasyOrder.Application.Contracts.Responses;
 using EasyOrder.Application.Contracts.Responses.Global;
 using EasyOrder.Application.Contracts.Responses.Options;

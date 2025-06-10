@@ -2,12 +2,13 @@
 // Project: EasyOrder.Infrastructure
 // Namespace: EasyOrder.Infrastructure
 
-using EasyOrder.Application.Contracts.InterfaceCommon;     // IGenericRepository<>, IUnitOfWork
-
+using EasyOrder.Application.Contracts.Interfaces.Main;
+using EasyOrder.Application.Contracts.Interfaces.Repository;
+using EasyOrder.Application.Contracts.Interfaces.Services;
+using EasyOrder.Application.Queries.Services;
 using EasyOrder.Infrastructure.Persistence.Context;        // ReadDbContext, WriteDbContext
 using EasyOrder.Infrastructure.Persistence.Repositories;   // OrderRepository
 using EasyOrder.Infrastructure.Persistence.Repositories.Main; // GenericRepository<>
-using EasyOrderAdmin.Application.Queries.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,9 +17,7 @@ namespace EasyOrder.Infrastructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructureServices(
-            this IServiceCollection services,
-            IConfiguration configuration)
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,IConfiguration configuration)
         {
             AddingHealthCheck(services, configuration);
             AddHangfireString(services, configuration);
@@ -56,7 +55,10 @@ namespace EasyOrder.Infrastructure
         private static void AddingClientConnection(IServiceCollection services) { }
         private static void AddIdentity(IServiceCollection services) { }
         private static void AddingHangfireString(IServiceCollection services) { }
-        private static void AddServices(IServiceCollection services) { }
+        private static void AddServices(IServiceCollection services) 
+        {
+            services.AddScoped<IOrderService, OrderService>();
+        }
         private static void AddMapping(IServiceCollection services) { }
         private static void AddConfiguration(IServiceCollection services, IConfiguration configuration) { }
     }

@@ -16,13 +16,13 @@ namespace EasyOrder.Domain.Entities
         public Guid OrderId { get; set; }
 
         [Required, MaxLength(200)]
-        public string TransactionId { get; set; }
+        public Guid TransactionId { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }
 
         [Required, MaxLength(3)]
-        public string Currency { get; set; } = "USD";
+        public Currency Currency { get; set; }
 
         [Required, MaxLength(50)]
         public PaymentMethod Method { get; set; }    

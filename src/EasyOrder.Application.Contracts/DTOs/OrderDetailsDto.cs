@@ -8,8 +8,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EasyOrder.Application.Queries.DTOs;
 
-namespace EasyOrder.Application.Queries.DTOs
+namespace EasyOrder.Application.Contracts.DTOs
 {
     public class OrderDetailsDto
     {

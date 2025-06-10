@@ -1,9 +1,10 @@
 ﻿using EasyOrder.Api.Routes;
-using EasyOrder.Application.Contracts.Filters;
+using EasyOrder.Application.Contracts.DTOs;
 using EasyOrder.Application.Queries.Queries;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using EasyOrder.Application.Contracts.Filters;
+using EasyOrder.Application.Command.Commands;
 
 namespace EasyOrder.Api.Controllers
 {
@@ -17,41 +18,43 @@ namespace EasyOrder.Api.Controllers
             _mediator = mediator;
         }
 
-        /// <summary>
-        /// Retrieves a paginated list of all orders for the current user.
-        /// </summary>
-        /// <param name="paginationFilter">
-        ///   Paging parameters (PageNumber, PageSize) to control the slice of data returned.
-        /// </param>
-        /// <returns>
-        ///   A <see cref="BaseApiResponse"/> containing the paged list of orders and the appropriate HTTP status code.
-        /// </returns>
         [HttpGet(OrderRoutes.GetAll)]
         public async Task<IActionResult> GetAllOrders([FromQuery] PaginationFilter paginationFilter)
         {
             var query = new GetAllOrdersQuery(paginationFilter);
-
             var response = await _mediator.Send(query);
-
             return StatusCode(response.StatusCode, response);
         }
 
-        /// <summary>
-        /// Retrieves the details of a single order by its unique identifier.
-        /// </summary>
-        /// <param name="id">The database ID of the order to retrieve.</param>
-        /// <returns>
-        ///   A <see cref="BaseApiResponse"/> containing the order details (if found) or an error message and status code.
-        /// </returns>
         [HttpGet(OrderRoutes.GetById)]
         public async Task<IActionResult> GetOrderById(int id)
         {
             var query = new GetOrderByIdQuery(id);
-
             var response = await _mediator.Send(query);
-
             return StatusCode(response.StatusCode, response);
         }
 
+        [HttpPost(OrderRoutes.Create)]
+        public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto dto)
+        {
+            var query = new CreateOrderCommand(dto);
+            var response = await _mediator.Send(query);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpPut(OrderRoutes.Update)]
+        public async Task<IActionResult> CancelOrder(int id)
+        {
+            var query = new CancelOrderCommand(id);
+            var response = await _mediator.Send(query);
+            return StatusCode(response.StatusCode, response);
+        }
+        [HttpGet(OrderRoutes.GetStatus)]
+        public async Task<IActionResult> GetOrderStatus(int id)
+        {
+            var query = new CancelOrderCommand(id);
+            var response = await _mediator.Send(query);
+            return StatusCode(response.StatusCode, response);
+        }
     }
 }

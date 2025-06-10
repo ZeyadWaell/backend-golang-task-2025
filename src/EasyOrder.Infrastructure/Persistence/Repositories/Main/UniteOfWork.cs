@@ -1,6 +1,6 @@
-﻿using EasyOrder.Application.Contracts.InterfaceCommon;
+﻿using EasyOrder.Application.Contracts.Interfaces.Main;
+using EasyOrder.Application.Contracts.Interfaces.Repository;
 using EasyOrder.Infrastructure.Persistence.Context;
-using EasyOrderAdmin.Application.Queries.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

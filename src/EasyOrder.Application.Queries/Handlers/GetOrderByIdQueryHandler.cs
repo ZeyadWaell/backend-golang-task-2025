@@ -1,12 +1,7 @@
-﻿using EasyOrder.Application.Contracts.InterfaceCommon;
+﻿using EasyOrder.Application.Contracts.Interfaces.Services;
 using EasyOrder.Application.Contracts.Responses.Global;
 using EasyOrder.Application.Queries.Queries;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EasyOrder.Application.Queries.Handlers
 {
