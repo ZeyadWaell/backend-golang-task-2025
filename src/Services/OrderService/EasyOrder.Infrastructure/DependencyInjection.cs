@@ -9,9 +9,12 @@ using EasyOrder.Application.Queries.Services;
 using EasyOrder.Infrastructure.Persistence.Context;        // ReadDbContext, WriteDbContext
 using EasyOrder.Infrastructure.Persistence.Repositories;   // OrderRepository
 using EasyOrder.Infrastructure.Persistence.Repositories.Main; // GenericRepository<>
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace EasyOrder.Infrastructure
 {
@@ -22,9 +25,8 @@ namespace EasyOrder.Infrastructure
             AddingHealthCheck(services, configuration);
             AddHangfireString(services, configuration);
             AddingClientConnection(services);
-            AddIdentity(services);
+            AddIdentity(services, configuration);
             AddingHangfireString(services);
-            AddMapping(services);
             AddConfiguration(services, configuration);
             AddDatabaseContext(services, configuration);
             AddRepositories(services);
@@ -53,13 +55,30 @@ namespace EasyOrder.Infrastructure
         private static void AddingHealthCheck(IServiceCollection services, IConfiguration configuration) { }
         private static void AddHangfireString(IServiceCollection services, IConfiguration configuration) { }
         private static void AddingClientConnection(IServiceCollection services) { }
-        private static void AddIdentity(IServiceCollection services) { }
+        private static void AddIdentity(IServiceCollection services, IConfiguration configuration)
+        {
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) 
+                .AddJwtBearer(options =>
+                {
+                    var jwtSettings = configuration.GetSection("Jwt");
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = jwtSettings["Issuer"],
+                        ValidAudience = jwtSettings["Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]))
+                    };
+                });
+        }
         private static void AddingHangfireString(IServiceCollection services) { }
         private static void AddServices(IServiceCollection services) 
         {
             services.AddScoped<IOrderService, OrderService>();
         }
-        private static void AddMapping(IServiceCollection services) { }
         private static void AddConfiguration(IServiceCollection services, IConfiguration configuration) { }
     }
 }
