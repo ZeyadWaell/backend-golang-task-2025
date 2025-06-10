@@ -15,6 +15,5 @@ namespace EasyOrder.Api.Routes
         public const string Update = Base + "/{id}/cancel";
         public const string Delete = Base + "/{id}";
         public const string GetStatus = Base + "/{id}/status";
-
     }
 }

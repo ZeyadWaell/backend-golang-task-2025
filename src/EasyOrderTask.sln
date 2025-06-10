@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InventoryService", "Invento
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OrderService", "OrderService", "{945C9443-30FA-4E3F-811A-BB2566EAC2E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderProduct.Api", "EasyOrderAdmin.Api\EasyOrderProduct.Api.csproj", "{3A193D10-0870-4E73-957C-A9B1F666A331}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderProduct.Api", "Services\ProductService\EasyOrderAdmin.Api\EasyOrderProduct.Api.csproj", "{3A193D10-0870-4E73-957C-A9B1F666A331}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{9E834A5B-32CA-4A74-81AE-F95722D2BE3C}"
 EndProject
@@ -23,19 +23,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserService", "UserService"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProductService", "ProductService", "{ADAF8845-605E-4F28-BC7D-BFA5EB1211CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderProduct.Application.Command", "EasyOrderAdmin.Application.Commands\EasyOrderProduct.Application.Command.csproj", "{5286E203-911F-4786-8EB2-80F72017F326}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderProduct.Application.Command", "Services\ProductService\EasyOrderAdmin.Application.Commands\EasyOrderProduct.Application.Command.csproj", "{5286E203-911F-4786-8EB2-80F72017F326}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderProduct.Application.Queries", "EasyOrderAdmin.Application.Queries\EasyOrderProduct.Application.Queries.csproj", "{C90139C3-F6D5-4C09-ACE9-0E6CD89AB3E7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderProduct.Application.Queries", "Services\ProductService\EasyOrderAdmin.Application.Queries\EasyOrderProduct.Application.Queries.csproj", "{C90139C3-F6D5-4C09-ACE9-0E6CD89AB3E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderProduct.Domain", "EasyOrderAdmin.Domain\EasyOrderProduct.Domain.csproj", "{A2846911-5D4C-4B94-AC04-AED92073DAE3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderProduct.Domain", "Services\ProductService\EasyOrderAdmin.Domain\EasyOrderProduct.Domain.csproj", "{A2846911-5D4C-4B94-AC04-AED92073DAE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderProduct.Infrastructure", "EasyOrderAdmin.Infrastructure\EasyOrderProduct.Infrastructure.csproj", "{FD2F210D-A871-4501-96AC-DF382CB79E9F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderProduct.Infrastructure", "Services\ProductService\EasyOrderAdmin.Infrastructure\EasyOrderProduct.Infrastructure.csproj", "{FD2F210D-A871-4501-96AC-DF382CB79E9F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6DF8ECA7-4E27-466D-B526-F600F392C80C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.AdminService.UnitTests", "EasyOrder.AdminService.UnitTests\EasyOrder.AdminService.UnitTests.csproj", "{5C763CB2-1015-44E2-91BB-48A44BCC5F70}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.AdminService.UnitTests", "Services\ProductService\EasyOrder.AdminService.UnitTests\EasyOrder.AdminService.UnitTests.csproj", "{5C763CB2-1015-44E2-91BB-48A44BCC5F70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.AdminService.IntegrationTests", "EasyOrder.AdminService.IntegrationTests\EasyOrder.AdminService.IntegrationTests.csproj", "{6E8E0917-4EC2-46F1-828E-87135B109C12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.AdminService.IntegrationTests", "Services\ProductService\EasyOrder.AdminService.IntegrationTests\EasyOrder.AdminService.IntegrationTests.csproj", "{6E8E0917-4EC2-46F1-828E-87135B109C12}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.Application.Command", "EasyOrder.Application.Command\EasyOrder.Application.Command.csproj", "{0907962C-D0C2-47B3-BCE5-281F4FEDF7F1}"
 EndProject
