@@ -84,12 +84,8 @@ namespace EasyOrderIdentity.Application.Services
                     return ErrorResponse.NotFound("User not found.");
 
                 var roles = await _userManager.GetRolesAsync(user);
-                var data = new AuthResultDto
-                {
-                    UserId = user.Id,
-                    Email = user.Email,
-                    Roles = roles
-                };
+                var data = new AuthResultDto{UserId = user.Id,Email = user.Email,Roles = roles};
+
                 return new SuccessResponse<object>("User retrieved successfully", data);
             }
 

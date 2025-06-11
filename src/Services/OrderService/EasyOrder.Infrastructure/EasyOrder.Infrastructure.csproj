@@ -8,17 +8,21 @@
 
   <ItemGroup>
     <Compile Remove="Extensions\**" />
+    <Compile Remove="Persistence\Mappings\**" />
     <Compile Remove="Persistence\Migrations\**" />
+    <Compile Remove="Settings\**" />
     <EmbeddedResource Remove="Extensions\**" />
+    <EmbeddedResource Remove="Persistence\Mappings\**" />
     <EmbeddedResource Remove="Persistence\Migrations\**" />
+    <EmbeddedResource Remove="Settings\**" />
     <None Remove="Extensions\**" />
+    <None Remove="Persistence\Mappings\**" />
     <None Remove="Persistence\Migrations\**" />
+    <None Remove="Settings\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Messaging\" />
-    <Folder Include="Persistence\Mappings\" />
-    <Folder Include="Settings\" />
   </ItemGroup>
 
   <ItemGroup>
