@@ -59,6 +59,14 @@ namespace EasyOrderProduct.Api.Controllers
             var result = await _mediator.Send(product);
             return StatusCode(result.StatusCode, result);
         }
-
+        [HttpGet]
+        [Route(ProductRoutes.CheckInventory)]
+        [AllowAnonymous]
+        public async Task<IActionResult> CheckInventory([FromRoute]int id)
+        {
+            var product = new GetProductInventoryQuery(id);
+            var result = await _mediator.Send(product);
+            return StatusCode(result.StatusCode, result);
+        }
     }
 }

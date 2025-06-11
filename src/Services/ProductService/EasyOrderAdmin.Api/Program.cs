@@ -1,6 +1,10 @@
 using AutoMapper; // Ensure this namespace is included
 using EasyOrderProduct.Api.Middelware;
+using EasyOrderProduct.Application.Command.Commands;
+using EasyOrderProduct.Application.Command.Handlers;
+using EasyOrderProduct.Application.Queries.Handlers;
 using EasyOrderProduct.Infrastructure.Extentions;
+using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,6 +24,13 @@ builder.Services
     .AddSwaggerWithJwt()
     .AddControllers();
 
+
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());                          // your API
+    cfg.RegisterServicesFromAssembly(typeof(GetProductInventoryQueryHandler).Assembly);         // your Application
+    cfg.RegisterServicesFromAssembly(typeof(CreateProductCommandHandler).Assembly); // your Infrastructure
+});
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();

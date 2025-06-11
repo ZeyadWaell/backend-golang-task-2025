@@ -10,7 +10,7 @@ namespace EasyOrderProduct.Infrastructure.Persistence.Repositories.Main
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : Base
     {
-        private readonly ReadDbContext _readContext;
+        protected readonly ReadDbContext _readContext;
         private readonly WriteDbContext _writeContext;
         private readonly DbSet<T> _readSet;
         private readonly DbSet<T> _writeSet;

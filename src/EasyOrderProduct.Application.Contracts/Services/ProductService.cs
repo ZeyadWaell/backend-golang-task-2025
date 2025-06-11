@@ -10,6 +10,7 @@ using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,8 +43,6 @@ namespace EasyOrderProduct.Application.Contracts.Services
             await _unitOfWork.SaveChangesAsync();
             return new SuccessResponse<object>("Added Fully", product.Id, 200);
         }
-
-
         public async Task<BaseApiResponse> GetByIdAsync(int id)
         {
             var product = await _unitOfWork.ProductRepository.GetAsync(p => p.Id == id);
@@ -71,7 +70,7 @@ namespace EasyOrderProduct.Application.Contracts.Services
         public async Task<BaseApiResponse> UpsertAsync(UpsertProductDto dto)
         {
             Product product;
-
+            #region Handle Id
             if (dto.Id.HasValue)
             {
                 product = await _unitOfWork.ProductRepository
@@ -83,7 +82,7 @@ namespace EasyOrderProduct.Application.Contracts.Services
             {
                 product = new Product();
             }
-
+            #endregion
             product.Name = dto.Name;
             product.Description = dto.Description;
             product.BasePrice = dto.BasePrice;
@@ -103,6 +102,21 @@ namespace EasyOrderProduct.Application.Contracts.Services
             );
         }
 
+        public async Task<BaseApiResponse> GetInventoryAsync(int productId)
+        {
+            var product = await _unitOfWork.ProductRepository.GetWithItemsAndInventoryAsync(productId);
+
+            if (product == null)
+                return ErrorResponse.NotFound("Product not found");
+
+            var result = _mapper.Map<ProductInventoryResponseDto>(product);
+
+            return new SuccessResponse<object>(
+                message: "Product inventory retrieved successfully",
+                data: result,
+                statusCode: 200
+            );
+        }
         #region UpdateProduct
         private void UpdateVariations(Product product,
                                       IList<UpsertVariationDto> dtos)

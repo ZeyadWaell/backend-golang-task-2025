@@ -15,5 +15,6 @@ namespace EasyOrderProduct.Application.Contracts.Interfaces
         Task<BaseApiResponse> GetAllAsync(PaginationFilter filter);
         Task<BaseApiResponse> GetByIdAsync(int id);
         Task<BaseApiResponse> UpsertAsync(UpsertProductDto dto);
+        Task<BaseApiResponse> GetInventoryAsync(int productId);
     }
 }

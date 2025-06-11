@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EasyOrderIdentity.Application.Command\EasyOrderIdentity.Application.csproj" />
+    <ProjectReference Include="..\EasyOrderIdentity.Application\EasyOrderIdentity.Application.csproj" />
     <ProjectReference Include="..\EasyOrderIdentity.Domain\EasyOrderIdentity.Domain.csproj" />
   </ItemGroup>
 

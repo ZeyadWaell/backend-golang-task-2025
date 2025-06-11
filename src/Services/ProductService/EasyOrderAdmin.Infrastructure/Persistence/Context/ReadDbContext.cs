@@ -1,6 +1,7 @@
 ﻿using EasyOrderProduct.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Reflection.Emit;
 
 namespace EasyOrderProduct.Infrastructure.Persistence.Context
 {
@@ -27,6 +28,12 @@ namespace EasyOrderProduct.Infrastructure.Persistence.Context
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<ProductItemOption>()
+    .HasOne(pio => pio.VariationOption)
+    .WithMany(vo => vo.ProductItemOptions)
+    .HasForeignKey(pio => pio.VariationOptionId)
+    .OnDelete(DeleteBehavior.Restrict);
             // configure your projections:
             // builder.Entity<OrderReadModel>().HasKey(x => x.Id);
         }

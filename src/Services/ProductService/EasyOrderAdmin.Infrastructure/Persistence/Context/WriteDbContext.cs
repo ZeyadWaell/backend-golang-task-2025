@@ -27,6 +27,13 @@ namespace EasyOrderProduct.Infrastructure.Persistence.Context
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+
+            builder.Entity<ProductItemOption>()
+    .HasOne(pio => pio.VariationOption)
+    .WithMany(vo => vo.ProductItemOptions)
+    .HasForeignKey(pio => pio.VariationOptionId)
+    .OnDelete(DeleteBehavior.Restrict);
             // e.g. builder.ApplyConfiguration(new OrderConfiguration());
         }
     }

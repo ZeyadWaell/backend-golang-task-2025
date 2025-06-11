@@ -38,7 +38,6 @@ namespace EasyOrderIdentity.Infrastructure.ProgramServices
 
         private static void AddIdentity(IServiceCollection services, IConfiguration configuration)
         {
-            // now that AuditableEntityInterceptor is in DI, we can resolve it for EF
             services.AddDbContext<AppDbContext>((provider, options) =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("IdentityDataBaseConnection"))

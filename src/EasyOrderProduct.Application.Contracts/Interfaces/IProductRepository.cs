@@ -10,5 +10,6 @@ namespace EasyOrderProduct.Application.Contracts.Interfaces
 {
     public interface IProductRepository : IGenericRepository<Product>
     {
+        Task<Product> GetWithItemsAndInventoryAsync(int productId);
     }
 }
