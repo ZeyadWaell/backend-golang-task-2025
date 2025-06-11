@@ -2,6 +2,7 @@
 // Project: EasyOrder.Infrastructure
 // Namespace: EasyOrder.Infrastructure
 
+using EasyOrder.Application.Contracts.Interfaces.InternalServices;
 using EasyOrder.Application.Contracts.Interfaces.Main;
 using EasyOrder.Application.Contracts.Interfaces.Repository;
 using EasyOrder.Application.Contracts.Interfaces.Services;
@@ -9,6 +10,7 @@ using EasyOrder.Application.Queries.Services;
 using EasyOrder.Infrastructure.Persistence.Context;        // ReadDbContext, WriteDbContext
 using EasyOrder.Infrastructure.Persistence.Repositories;   // OrderRepository
 using EasyOrder.Infrastructure.Persistence.Repositories.Main; // GenericRepository<>
+using EasyOrder.Infrastructure.Services.Internal;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,15 +24,9 @@ namespace EasyOrder.Infrastructure.Extentions
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,IConfiguration configuration)
         {
-            AddingHealthCheck(services, configuration);
-            AddHangfireString(services, configuration);
-            AddingClientConnection(services);
-            AddIdentity(services, configuration);
-            AddingHangfireString(services);
-            AddConfiguration(services, configuration);
+            AddServices(services);
             AddDatabaseContext(services, configuration);
             AddRepositories(services);
-            AddServices(services);
 
             return services;
         }
@@ -52,33 +48,11 @@ namespace EasyOrder.Infrastructure.Extentions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
-        private static void AddingHealthCheck(IServiceCollection services, IConfiguration configuration) { }
-        private static void AddHangfireString(IServiceCollection services, IConfiguration configuration) { }
-        private static void AddingClientConnection(IServiceCollection services) { }
-        private static void AddIdentity(IServiceCollection services, IConfiguration configuration)
-        {
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme) 
-                .AddJwtBearer(options =>
-                {
-                    var jwtSettings = configuration.GetSection("Jwt");
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = jwtSettings["Issuer"],
-                        ValidAudience = jwtSettings["Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]))
-                    };
-                });
-        }
-        private static void AddingHangfireString(IServiceCollection services) { }
         private static void AddServices(IServiceCollection services) 
         {
+            services.AddScoped<IImageService, ImageService>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IOrderService, OrderService>();
         }
-        private static void AddConfiguration(IServiceCollection services, IConfiguration configuration) { }
     }
 }
