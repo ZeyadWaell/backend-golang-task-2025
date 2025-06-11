@@ -49,7 +49,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.Application.Contr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderIdentity.Api", "Services\UserService\EasyOrderIdentity.Api\EasyOrderIdentity.Api.csproj", "{8F857DBC-F5ED-4907-A480-54934562CB90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderIdentity.Application", "Services\UserService\EasyOrderIdentity.Application.Command\EasyOrderIdentity.Application.csproj", "{54C098E1-4A42-44FE-8FD7-DA7E1D79709B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderIdentity.Application", "Services\UserService\EasyOrderIdentity.Application\EasyOrderIdentity.Application.csproj", "{54C098E1-4A42-44FE-8FD7-DA7E1D79709B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderIdentity.Domain", "Services\UserService\EasyOrderIdentity.Domain\EasyOrderIdentity.Domain.csproj", "{DAA368EF-3FF3-4761-9CAF-0743F15D654B}"
 EndProject
