@@ -7,10 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\" />
-    <Folder Include="Handlers\" />
-    <Folder Include="Mappings\" />
-    <Folder Include="Interfaces\" />
+    <Compile Remove="Interfaces\**" />
+    <Compile Remove="Mappings\**" />
+    <EmbeddedResource Remove="Interfaces\**" />
+    <EmbeddedResource Remove="Mappings\**" />
+    <None Remove="Interfaces\**" />
+    <None Remove="Mappings\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Validators\" />
   </ItemGroup>
 
@@ -24,6 +29,10 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\EasyOrderProduct.Application.Contracts\EasyOrderProduct.Application.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

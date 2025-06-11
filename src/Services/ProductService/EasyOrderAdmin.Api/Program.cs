@@ -1,4 +1,5 @@
 using AutoMapper; // Ensure this namespace is included
+using EasyOrderProduct.Api.Middelware;
 using EasyOrderProduct.Infrastructure.Extentions;
 var builder = WebApplication.CreateBuilder(args);
 
