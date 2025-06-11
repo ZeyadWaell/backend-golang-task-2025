@@ -3,7 +3,6 @@ using EasyOrderIdentity.Application.DTOs.Responses;
 using EasyOrderIdentity.Application.DTOs.Responses.Global;
 using EasyOrderIdentity.Application.Interfaces;
 using EasyOrderIdentity.Domain.Entites;
-using EasyOrderIdentity.Infrastructure.Services.Internal;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -21,12 +20,13 @@ namespace EasyOrderIdentity.Application.Services
             private readonly UserManager<ApplicationUser> _userManager;
             private readonly SignInManager<ApplicationUser> _signInManager;
             private readonly IConfiguration _configuration;
-
-            public AuthService(UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager,IConfiguration configuration)
+            private readonly IJWtHelper _jwtHelper;
+            public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, IJWtHelper jwtHelper)
             {
                 _userManager = userManager;
                 _signInManager = signInManager;
                 _configuration = configuration;
+                _jwtHelper = jwtHelper;
             }
 
             public async Task<BaseApiResponse> LoginAsync(LoginRequestDto request)
@@ -40,7 +40,7 @@ namespace EasyOrderIdentity.Application.Services
                     return ErrorResponse.Unauthorized("Invalid credentials");
 
                 var roles = await _userManager.GetRolesAsync(user);
-                var token = JwtHelper.GenerateToken(user, roles, _configuration);
+                var token = _jwtHelper.GenerateToken(user, roles, _configuration);
                 var data = new AuthTokenDto { Token = token };
                 return new SuccessResponse<object>("Login successful", data);
             }
@@ -55,8 +55,8 @@ namespace EasyOrderIdentity.Application.Services
                 var role = request.Role ?? "User";
                 await _userManager.AddToRoleAsync(user, role);
                 var roles = new List<string> { role };
-                var token = JwtHelper.GenerateToken(user, roles, _configuration);
-                var data = new AuthTokenDto {Token = token };
+                var token = _jwtHelper.GenerateToken(user, roles, _configuration);
+                var data = new AuthResultDto { UserId = user.Id, Email = user.Email, Roles = roles };
                 return new SuccessResponse<object>("User created successfully", data, 201);
             }
 

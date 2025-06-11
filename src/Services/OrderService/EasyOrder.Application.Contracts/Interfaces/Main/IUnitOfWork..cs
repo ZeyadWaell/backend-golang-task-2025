@@ -11,6 +11,7 @@ namespace EasyOrder.Application.Contracts.Interfaces.Main
     {
 
         IOrderRepository OrdersRepository { get; }
+        IPaymentRepository PaymentRepository { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

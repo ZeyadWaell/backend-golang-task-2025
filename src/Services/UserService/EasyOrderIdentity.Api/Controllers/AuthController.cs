@@ -2,6 +2,8 @@
 using EasyOrderIdentity.Application.DTOs;
 using EasyOrderIdentity.Application.Interfaces;
 using EasyOrderIdentity.Domain.Entites;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +22,7 @@ namespace EasyOrderIdentity.Api.Controllers
             }
 
             [HttpPost(AuthRoutes.Login)]
+            [AllowAnonymous]
             public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
             {
                 var response = await _authService.LoginAsync(request);
@@ -27,6 +30,7 @@ namespace EasyOrderIdentity.Api.Controllers
             }
 
             [HttpPost(AuthRoutes.CreateUser)]
+            [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
             public async Task<IActionResult> CreateUser([FromBody] CreateUserRequestDto request)
             {
                 var response = await _authService.CreateUserAsync(request);
@@ -34,6 +38,7 @@ namespace EasyOrderIdentity.Api.Controllers
             }
 
             [HttpGet(AuthRoutes.GetUser)]
+            [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
             public async Task<IActionResult> GetUser([FromRoute] string id)
             {
                 var response = await _authService.GetUserAsync(id);
@@ -41,6 +46,7 @@ namespace EasyOrderIdentity.Api.Controllers
             }
 
             [HttpPut(AuthRoutes.UpdateUser)]
+            [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
             public async Task<IActionResult> UpdateUser([FromRoute] string id, [FromBody] UpdateUserRequestDto request)
             {
                 var response = await _authService.UpdateUserAsync(id, request);

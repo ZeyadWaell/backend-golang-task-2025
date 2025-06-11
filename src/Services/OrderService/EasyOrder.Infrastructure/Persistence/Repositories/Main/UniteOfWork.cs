@@ -14,17 +14,23 @@ namespace EasyOrder.Infrastructure.Persistence.Repositories.Main
     /// </summary>
     public class UnitOfWork : IUnitOfWork
     {
+        #region private
         private readonly ReadDbContext _readContext;
         private readonly WriteDbContext _writeContext;
         private bool _disposed;
+        #endregion
 
+        #region public
         public IOrderRepository OrdersRepository { get; }
+        public IPaymentRepository PaymentRepository { get; }
+        #endregion
 
         public UnitOfWork(ReadDbContext readContext, WriteDbContext writeContext)
         {
             _readContext = readContext;
             _writeContext = writeContext;
             OrdersRepository = new OrderRepository(_readContext, _writeContext);
+            PaymentRepository = new PaymentRepository(_readContext, _writeContext);
         }
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -32,6 +38,7 @@ namespace EasyOrder.Infrastructure.Persistence.Repositories.Main
             return await _writeContext.SaveChangesAsync(cancellationToken);
         }
 
+        #region Dispose
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)
@@ -44,7 +51,7 @@ namespace EasyOrder.Infrastructure.Persistence.Repositories.Main
                 _disposed = true;
             }
         }
-
+        #endregion
         public void Dispose()
         {
             Dispose(true);

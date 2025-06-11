@@ -5,11 +5,8 @@ using EasyOrder.Application.Contracts.Filters;
 using EasyOrder.Application.Contracts.Interfaces.InternalServices;
 using EasyOrder.Application.Contracts.Interfaces.Main;
 using EasyOrder.Application.Contracts.Interfaces.Services;
-using EasyOrder.Application.Contracts.Responses.Global;
 using EasyOrder.Domain.Entities;
 using EasyOrder.Domain.Enums;
-using Microsoft.EntityFrameworkCore;
-using System.Security.AccessControl;
 
 
 namespace EasyOrder.Application.Queries.Services

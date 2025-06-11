@@ -1,4 +1,5 @@
-﻿using EasyOrderIdentity.Domain.Entites;
+﻿using EasyOrderIdentity.Application.Interfaces;
+using EasyOrderIdentity.Domain.Entites;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -11,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace EasyOrderIdentity.Infrastructure.Services.Internal
 {
-    public static class JwtHelper
+    public  class JwtHelper : IJWtHelper
     {
-        public static string GenerateToken(ApplicationUser user, IList<string> roles, IConfiguration config)
+        public  string GenerateToken(ApplicationUser user, IList<string> roles, IConfiguration config)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

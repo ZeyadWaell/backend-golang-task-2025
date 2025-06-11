@@ -1,12 +1,6 @@
-﻿using AutoMapper;
-using EasyOrder.Application.Command.Commands;
-using EasyOrder.Application.Contracts.DTOs;
+﻿using EasyOrder.Application.Command.Commands;
 using EasyOrder.Application.Contracts.DTOs.Responses.Global;
-using EasyOrder.Application.Contracts.Interfaces.InternalServices;
-using EasyOrder.Application.Contracts.Interfaces.Main;
 using EasyOrder.Application.Contracts.Interfaces.Services;
-using EasyOrder.Application.Contracts.Responses.Global;
-using EasyOrder.Domain.Entities;
 using MediatR;
 
 namespace EasyOrder.Application.Command.Handlers

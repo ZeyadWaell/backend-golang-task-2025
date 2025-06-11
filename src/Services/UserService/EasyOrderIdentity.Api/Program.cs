@@ -1,44 +1,24 @@
-using EasyOrderIdentity.Infrastructure.Persistence.Context;
-using EasyOrderIdentity.Infrastructure.Seed.Identity;
-using EasyOrderIdentity.Domain.Entites;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using EasyOrderIdentity.Api.Extensions;
+using EasyOrderIdentity.Api.Middleware;
+using EasyOrderIdentity.Infrastructure;
+using EasyOrderIdentity.Infrastructure.Extentions;
+using EasyOrderIdentity.Infrastructure.ProgramServices;
 
-namespace EasyOrderIdentity.Api
-{
-    public class Program
-    {
-        public static async Task Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
+builder.Services
+    .AddInfrastructureServices(builder.Configuration)
+    .AddJwtAuthentication(builder.Configuration)
+    .AddSwaggerWithJwt()
+    .AddControllers();
 
-            builder.Services.AddControllers();
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+var app = builder.Build();
 
-            var app = builder.Build();
-
-            using (var scope = app.Services.CreateScope())
-            {
-                var seeder = scope.ServiceProvider.GetRequiredService<IdentitySeeder>();
-                await seeder.SeedAsync();
-            }
-
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthentication(); 
-            app.UseAuthorization();
-
-            app.MapControllers();
-
-            app.Run();
-        }
-    }
-}
+app.SeedIdentity();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseSwaggerUI();
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
+app.Run();
