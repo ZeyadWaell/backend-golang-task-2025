@@ -30,6 +30,7 @@ namespace EasyOrderIdentity.Infrastructure.ProgramServices
             services.AddScoped<AuditableEntityInterceptor>();
 
             // other application services
+            services.AddScoped<IOwnershipService, OwnershipService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IJWtHelper, JwtHelper>();

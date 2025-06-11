@@ -2,6 +2,7 @@
 using EasyOrderIdentity.Application.DTOs.Responses;
 using EasyOrderIdentity.Application.DTOs.Responses.Global;
 using EasyOrderIdentity.Application.Interfaces;
+using EasyOrderIdentity.Domain.Common;
 using EasyOrderIdentity.Domain.Entites;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace EasyOrderIdentity.Application.Services
 {
@@ -21,12 +23,16 @@ namespace EasyOrderIdentity.Application.Services
             private readonly SignInManager<ApplicationUser> _signInManager;
             private readonly IConfiguration _configuration;
             private readonly IJWtHelper _jwtHelper;
-            public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, IJWtHelper jwtHelper)
+            private readonly IOwnershipService _ownershipService;
+            private readonly ICurrentUserService _currentUserSerive;
+            public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, IJWtHelper jwtHelper, IOwnershipService ownershipService, ICurrentUserService currentUserSerive)
             {
                 _userManager = userManager;
                 _signInManager = signInManager;
                 _configuration = configuration;
                 _jwtHelper = jwtHelper;
+                _ownershipService = ownershipService;
+                _currentUserSerive = currentUserSerive;
             }
 
             public async Task<BaseApiResponse> LoginAsync(LoginRequestDto request)
@@ -62,12 +68,28 @@ namespace EasyOrderIdentity.Application.Services
 
             public async Task<BaseApiResponse> GetUserAsync(string id)
             {
+                var userId = _currentUserSerive.UserId;
+                var userRole = _currentUserSerive.UserRole;
                 var user = await _userManager.FindByIdAsync(id);
+
+                #region Making sure admin access is handled correctly
+                if (userRole != "Admin")
+                {
+                    if (user.Id != userId)
+                        return ErrorResponse.Forbidden("You do not have permission to access this user.");
+                }
+                #endregion
+
                 if (user == null)
-                    return ErrorResponse.NotFound("User not found");
+                    return ErrorResponse.NotFound("User not found.");
 
                 var roles = await _userManager.GetRolesAsync(user);
-                var data = new AuthResultDto { UserId = user.Id, Email = user.Email, Roles = roles };
+                var data = new AuthResultDto
+                {
+                    UserId = user.Id,
+                    Email = user.Email,
+                    Roles = roles
+                };
                 return new SuccessResponse<object>("User retrieved successfully", data);
             }
 

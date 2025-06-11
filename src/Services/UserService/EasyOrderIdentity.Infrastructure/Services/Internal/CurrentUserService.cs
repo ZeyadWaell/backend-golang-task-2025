@@ -23,7 +23,7 @@ namespace EasyOrderIdentity.Infrastructure.Services.Internal
             {
                 // Now check for ClaimTypes.NameIdentifier
                 var userClaim = _httpContextAccessor.HttpContext?.User?.Claims
-                                  .FirstOrDefault(x => x.Type == "uid");
+                                  .FirstOrDefault(x => x.Type == "jti");
                 return userClaim?.Value;
             }
         }
