@@ -1,3 +1,5 @@
+using AutoMapper; // Ensure this namespace is included
+using EasyOrderProduct.Infrastructure.Extentions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,19 +9,22 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Ensure the AutoMapper.Extensions.Microsoft.DependencyInjection package is installed
+// via NuGet and the following line is valid
+builder.Services
+    .AddHttpContextAccessor()
+    .AddAutoMapper(typeof(Program).Assembly)
+    .AddInfrastructureServices(builder.Configuration) // Ensure this method is implemented in the correct namespace
+    .AddJwtAuthentication(builder.Configuration)
+    .AddSwaggerWithJwt()
+    .AddControllers();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseSwaggerUI();
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

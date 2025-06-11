@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="MediatR" Version="12.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
@@ -16,7 +17,13 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\EasyOrderProduct.Application.Contracts\EasyOrderProduct.Application.Contracts.csproj" />
+    <ProjectReference Include="..\EasyOrderAdmin.Application.Commands\EasyOrderProduct.Application.Command.csproj" />
+    <ProjectReference Include="..\EasyOrderAdmin.Application.Queries\EasyOrderProduct.Application.Queries.csproj" />
+    <ProjectReference Include="..\EasyOrderAdmin.Infrastructure\EasyOrderProduct.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

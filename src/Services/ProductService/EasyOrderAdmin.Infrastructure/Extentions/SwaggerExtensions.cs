@@ -1,9 +1,9 @@
-﻿using EasyOrder.Infrastructure.Extentions;
+﻿using EasyOrderProduct.Infrastructure.Extentions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
-namespace EasyOrder.Infrastructure.Extentions
+namespace EasyOrderProduct.Infrastructure.Extentions
 {
     public static class SwaggerExtensions
     {
@@ -38,7 +38,7 @@ namespace EasyOrder.Infrastructure.Extentions
         public static WebApplication UseSwaggerUI(this WebApplication app)
         {
             app.UseSwagger();
-        //    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EasyOrderIdentity API v1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EasyOrderIdentity API v1"));
             return app;
         }
     }

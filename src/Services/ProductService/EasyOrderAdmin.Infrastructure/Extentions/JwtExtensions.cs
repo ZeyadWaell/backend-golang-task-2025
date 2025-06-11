@@ -6,7 +6,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EasyOrder.Infrastructure.Extentions
+namespace EasyOrderProduct.Infrastructure.Extentions
 {
     public static class JwtExtensions
     {
