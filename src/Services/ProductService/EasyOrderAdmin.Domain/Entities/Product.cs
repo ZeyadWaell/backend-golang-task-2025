@@ -16,7 +16,7 @@ namespace EasyOrderProduct.Domain.Entities
         public string Description { get; set; }
         [Column(TypeName = "decimal(10,2)")]
         public decimal BasePrice { get; set; }
-        public ICollection<Variation> Variations { get; set; } = new List<Variation>();
+        public ICollection<Variation>? Variations { get; set; } = new List<Variation>();
         public ICollection<ProductItem> ProductItems { get; set; } = new List<ProductItem>();
     }
 }

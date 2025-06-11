@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace EasyOrderProduct.Application.Contracts.DTOs.Responses
 {
-    public class CreateProductItemDto
+    public class UpsertProductItemDto
     {
+        public int? Id { get; set; }
+
         [Required, MaxLength(100)]
         public string Sku { get; set; }
 
@@ -16,7 +18,7 @@ namespace EasyOrderProduct.Application.Contracts.DTOs.Responses
         public decimal? PriceOverride { get; set; }
 
         [Required]
-        public IList<int> VariationOptionIds { get; set; } = new List<int>();
+        public IList<UpsertProductItemOptionDto> Options { get; set; } = new List<UpsertProductItemOptionDto>();
 
         [Range(0, int.MaxValue)]
         public int QuantityOnHand { get; set; }
@@ -24,4 +26,5 @@ namespace EasyOrderProduct.Application.Contracts.DTOs.Responses
         [MaxLength(100)]
         public string WarehouseLocation { get; set; }
     }
+
 }

@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Handlers\" />
-    <Folder Include="Mappings\" />
-    <Folder Include="Queries\" />
+    <Compile Remove="Mappings\**" />
+    <EmbeddedResource Remove="Mappings\**" />
+    <None Remove="Mappings\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +22,10 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\EasyOrderProduct.Application.Contracts\EasyOrderProduct.Application.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

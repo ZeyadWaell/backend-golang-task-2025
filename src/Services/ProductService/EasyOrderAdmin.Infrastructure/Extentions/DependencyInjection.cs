@@ -2,6 +2,7 @@
 using EasyOrderProduct.Application.Contracts.Interfaces;
 using EasyOrderProduct.Application.Contracts.Interfaces.InternalServices;
 using EasyOrderProduct.Application.Contracts.Interfaces.Main;
+using EasyOrderProduct.Application.Contracts.Services;
 using EasyOrderProduct.Infrastructure.Persistence.Context;
 using EasyOrderProduct.Infrastructure.Persistence.Repositories;
 using EasyOrderProduct.Infrastructure.Persistence.Repositories.Main;
@@ -44,6 +45,7 @@ public static class DependencyInjection
 
     private static void AddServices(IServiceCollection services) 
     {
+        services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IImageService, ImageService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
     }

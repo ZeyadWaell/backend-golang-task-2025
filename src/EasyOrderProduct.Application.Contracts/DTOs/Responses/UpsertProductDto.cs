@@ -7,22 +7,22 @@ using System.Threading.Tasks;
 
 namespace EasyOrderProduct.Application.Contracts.DTOs.Responses
 {
-    public class CreateProductDto
+    public class UpsertProductDto
     {
+        public int? Id { get; set; }
+
         [Required, MaxLength(255)]
         public string Name { get; set; }
 
         public string Description { get; set; }
 
-        [Required]
-        [Range(0, double.MaxValue)]
+        [Required, Range(0, double.MaxValue)]
         public decimal BasePrice { get; set; }
 
-        public IList<CreateVariationDto> Variations { get; set; }
-            = new List<CreateVariationDto>();
-
-        public IList<CreateProductItemDto> ProductItems { get; set; }
-            = new List<CreateProductItemDto>();
+        public IList<UpsertVariationDto> Variations { get; set; } = new List<UpsertVariationDto>();
+        public IList<UpsertProductItemDto> ProductItems { get; set; } = new List<UpsertProductItemDto>();
     }
+
+
 
 }

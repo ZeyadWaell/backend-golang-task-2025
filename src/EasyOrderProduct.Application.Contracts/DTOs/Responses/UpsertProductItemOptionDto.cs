@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace EasyOrderProduct.Application.Contracts.DTOs.Responses
 {
-    public class CreateVariationDto
+
+    public class UpsertProductItemOptionDto
     {
-        public int? Id { get; set; }
-
+        public int Id { get; set; }
         [Required, MaxLength(100)]
-        public string Name { get; set; }
-
-        public IList<CreateVariationOptionDto> Options { get; set; }
-            = new List<CreateVariationOptionDto>();
+        public string Value { get; set; }
+        [Range(0, double.MaxValue)]
+        public decimal PriceModifier { get; set; }
     }
+
 }

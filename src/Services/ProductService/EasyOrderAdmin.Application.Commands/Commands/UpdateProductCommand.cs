@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace EasyOrderProduct.Application.Command.Commands
 {
-    public class CreateProductCommand : IRequest<BaseApiResponse>
+    public class UpdateProductCommand : IRequest<BaseApiResponse>
     {
         public UpsertProductDto ProductDto { get; }
-        public CreateProductCommand(UpsertProductDto productDto)
+        public UpdateProductCommand(UpsertProductDto productDto)
         {
             ProductDto = productDto;
         }
