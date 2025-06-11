@@ -16,7 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace EasyOrder.Infrastructure
+namespace EasyOrder.Infrastructure.Extentions
 {
     public static class DependencyInjection
     {

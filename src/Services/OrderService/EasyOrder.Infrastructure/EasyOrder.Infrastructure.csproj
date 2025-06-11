@@ -7,13 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Extensions\**" />
     <Compile Remove="Persistence\Migrations\**" />
+    <EmbeddedResource Remove="Extensions\**" />
     <EmbeddedResource Remove="Persistence\Migrations\**" />
+    <None Remove="Extensions\**" />
     <None Remove="Persistence\Migrations\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Extensions\" />
     <Folder Include="Messaging\" />
     <Folder Include="Persistence\Mappings\" />
     <Folder Include="Settings\" />
@@ -32,6 +34,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+    <PackageReference Include="Swashbuckle.NodaTime.AspNetCore" Version="5.0.2" />
   </ItemGroup>
 
   <ItemGroup>
