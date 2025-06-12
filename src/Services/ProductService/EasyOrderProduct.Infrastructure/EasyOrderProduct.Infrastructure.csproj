@@ -42,8 +42,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\EasyOrderProduct.Application.Contracts\EasyOrderProduct.Application.Contracts.csproj" />
     <ProjectReference Include="..\EasyOrderAdmin.Domain\EasyOrderProduct.Domain.csproj" />
+    <ProjectReference Include="..\EasyOrderProduct.Application.Contracts\EasyOrderProduct.Application.Contract.csproj" />
+    <ProjectReference Include="..\EasyOrderProduct.Domain\EasyOrderProduct.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Services\ProductService\EasyOrderAdmin.Domain\EasyOrderProduct.Domain.csproj" />
+    <ProjectReference Include="..\EasyOrderProduct.Domain\EasyOrderProduct.Domain.csproj" />
   </ItemGroup>
 
 </Project>

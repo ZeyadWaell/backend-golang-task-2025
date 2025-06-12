@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\EasyOrder.Application.Command\EasyOrder.Application.Command.csproj" />
     <ProjectReference Include="..\EasyOrder.Application.Queries\EasyOrder.Application.Queries.csproj" />
+
     <ProjectReference Include="..\EasyOrder.Infrastructure\EasyOrder.Infrastructure.csproj" />
   </ItemGroup>
 

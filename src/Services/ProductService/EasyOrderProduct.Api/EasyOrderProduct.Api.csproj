@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -21,10 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\EasyOrderProduct.Application.Contracts\EasyOrderProduct.Application.Contracts.csproj" />
-    <ProjectReference Include="..\EasyOrderAdmin.Application.Commands\EasyOrderProduct.Application.Command.csproj" />
-    <ProjectReference Include="..\EasyOrderAdmin.Application.Queries\EasyOrderProduct.Application.Queries.csproj" />
-    <ProjectReference Include="..\EasyOrderAdmin.Infrastructure\EasyOrderProduct.Infrastructure.csproj" />
+    <ProjectReference Include="..\EasyOrderProduct.Application.Commands\EasyOrderProduct.Application.Command.csproj" />
+    <ProjectReference Include="..\EasyOrderProduct.Application.Contracts\EasyOrderProduct.Application.Contract.csproj" />
+    <ProjectReference Include="..\EasyOrderProduct.Application.Queries\EasyOrderProduct.Application.Queries.csproj" />
+    <ProjectReference Include="..\EasyOrderProduct.Infrastructure\EasyOrderProduct.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

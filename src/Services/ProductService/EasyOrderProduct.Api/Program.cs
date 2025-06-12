@@ -1,4 +1,4 @@
-using AutoMapper; // Ensure this namespace is included
+using AutoMapper;
 using EasyOrderProduct.Api.Middelware;
 using EasyOrderProduct.Application.Command.Commands;
 using EasyOrderProduct.Application.Command.Handlers;
@@ -7,19 +7,16 @@ using EasyOrderProduct.Infrastructure.Extentions;
 using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Ensure the AutoMapper.Extensions.Microsoft.DependencyInjection package is installed
-// via NuGet and the following line is valid
+
 builder.Services
     .AddHttpContextAccessor()
     .AddAutoMapper(typeof(Program).Assembly)
-    .AddInfrastructureServices(builder.Configuration) // Ensure this method is implemented in the correct namespace
+    .AddInfrastructureServices(builder.Configuration)
     .AddJwtAuthentication(builder.Configuration)
     .AddSwaggerWithJwt()
     .AddControllers();
@@ -27,9 +24,9 @@ builder.Services
 
 builder.Services.AddMediatR(cfg =>
 {
-    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());                          // your API
-    cfg.RegisterServicesFromAssembly(typeof(GetProductInventoryQueryHandler).Assembly);         // your Application
-    cfg.RegisterServicesFromAssembly(typeof(CreateProductCommandHandler).Assembly); // your Infrastructure
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());                         
+    cfg.RegisterServicesFromAssembly(typeof(GetProductInventoryQueryHandler).Assembly);         
+    cfg.RegisterServicesFromAssembly(typeof(CreateProductCommandHandler).Assembly); 
 });
 var app = builder.Build();
 
