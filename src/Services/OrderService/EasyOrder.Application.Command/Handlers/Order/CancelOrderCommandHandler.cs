@@ -1,4 +1,4 @@
-﻿using EasyOrder.Application.Command.Commands;
+﻿using EasyOrder.Application.Command.Commands.Order;
 using EasyOrder.Application.Contracts.DTOs.Responses.Global;
 
 using EasyOrder.Application.Contracts.Interfaces.Services;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EasyOrder.Application.Command.Handlers
+namespace EasyOrder.Application.Command.Handlers.Order
 {
     public class CancelOrderCommandHandler : IRequestHandler<CancelOrderCommand, BaseApiResponse>
     {

@@ -5,6 +5,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using EasyOrder.Application.Contracts.Filters;
 using EasyOrder.Application.Command.Commands;
+using EasyOrder.Application.Queries.Queries.Order;
+using EasyOrder.Application.Command.Commands.Order;
 
 namespace EasyOrder.Api.Controllers
 {

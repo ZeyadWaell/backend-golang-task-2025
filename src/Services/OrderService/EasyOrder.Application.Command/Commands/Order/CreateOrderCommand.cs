@@ -3,7 +3,7 @@ using EasyOrder.Application.Contracts.DTOs.Responses.Global;
 using MediatR;
 
 
-namespace EasyOrder.Application.Command.Commands
+namespace EasyOrder.Application.Command.Commands.Order
 {
     public class CreateOrderCommand : IRequest<BaseApiResponse>
     {

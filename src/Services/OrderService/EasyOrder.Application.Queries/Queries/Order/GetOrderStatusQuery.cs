@@ -2,7 +2,7 @@
 using MediatR;
 
 
-namespace EasyOrder.Application.Queries.Queries
+namespace EasyOrder.Application.Queries.Queries.Order
 {
     public record GetOrderStatusQuery(int id) : IRequest<BaseApiResponse>;
 }

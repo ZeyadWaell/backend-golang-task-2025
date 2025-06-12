@@ -1,9 +1,9 @@
 ﻿using EasyOrder.Application.Contracts.DTOs.Responses.Global;
 using EasyOrder.Application.Contracts.Interfaces.Services;
-using EasyOrder.Application.Queries.Queries;
+using EasyOrder.Application.Queries.Queries.Order;
 using MediatR;
 
-namespace EasyOrder.Application.Queries.Handlers
+namespace EasyOrder.Application.Queries.Handlers.Order
 {
     public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, BaseApiResponse>
     {

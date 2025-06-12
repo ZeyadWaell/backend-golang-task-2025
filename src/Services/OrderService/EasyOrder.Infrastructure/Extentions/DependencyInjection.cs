@@ -1,22 +1,18 @@
-﻿// File: DependencyInjection.cs
-// Project: EasyOrder.Infrastructure
-// Namespace: EasyOrder.Infrastructure
-
+﻿
 using EasyOrder.Application.Contracts.Interfaces.InternalServices;
 using EasyOrder.Application.Contracts.Interfaces.Main;
 using EasyOrder.Application.Contracts.Interfaces.Repository;
 using EasyOrder.Application.Contracts.Interfaces.Services;
+using EasyOrder.Application.Contracts.Services;
 using EasyOrder.Application.Queries.Services;
-using EasyOrder.Infrastructure.Persistence.Context;        // ReadDbContext, WriteDbContext
-using EasyOrder.Infrastructure.Persistence.Repositories;   // OrderRepository
-using EasyOrder.Infrastructure.Persistence.Repositories.Main; // GenericRepository<>
+using EasyOrder.Infrastructure.Persistence.Context;       
+using EasyOrder.Infrastructure.Persistence.Repositories;
+using EasyOrder.Infrastructure.Persistence.Repositories.Main;
 using EasyOrder.Infrastructure.Services.Internal;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+
 
 namespace EasyOrder.Infrastructure.Extentions
 {
@@ -50,6 +46,7 @@ namespace EasyOrder.Infrastructure.Extentions
 
         private static void AddServices(IServiceCollection services) 
         {
+            services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IOrderService, OrderService>();

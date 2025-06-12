@@ -32,4 +32,8 @@
     <ProjectReference Include="..\EasyOrder.Application.Contracts\EasyOrder.Application.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Validators\Admin\" />
+  </ItemGroup>
+
 </Project>

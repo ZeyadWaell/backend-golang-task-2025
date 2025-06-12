@@ -1,9 +1,9 @@
-﻿using EasyOrder.Application.Command.Commands;
+﻿using EasyOrder.Application.Command.Commands.Order;
 using EasyOrder.Application.Contracts.DTOs.Responses.Global;
 using EasyOrder.Application.Contracts.Interfaces.Services;
 using MediatR;
 
-namespace EasyOrder.Application.Command.Handlers
+namespace EasyOrder.Application.Command.Handlers.Order
 {
     public class CreateOrderCommandHandler: IRequestHandler<CreateOrderCommand, BaseApiResponse>
     {

@@ -1,6 +1,6 @@
 ﻿using EasyOrder.Application.Contracts.DTOs.Responses.Global;
 using EasyOrder.Application.Contracts.Interfaces.Services;
-using EasyOrder.Application.Queries.Queries;
+using EasyOrder.Application.Queries.Queries.Order;
 using MediatR;
 using Microsoft.VisualBasic;
 using System;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EasyOrder.Application.Queries.Handlers
+namespace EasyOrder.Application.Queries.Handlers.Order
 {
     public class GetOrderStatusQueryHandler : IRequestHandler<GetOrderStatusQuery, BaseApiResponse>
     {

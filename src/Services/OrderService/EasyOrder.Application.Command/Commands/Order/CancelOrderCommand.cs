@@ -2,7 +2,7 @@
 using MediatR;
 
 
-namespace EasyOrder.Application.Command.Commands
+namespace EasyOrder.Application.Command.Commands.Order
 {
     public class CancelOrderCommand : IRequest<BaseApiResponse>
     {
