@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36121.58
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.Api", "Services\OrderService\EasyOrderTask\EasyOrder.Api.csproj", "{A2515B78-5C72-4D67-ABA3-36D8C1E03F15}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrder.Api", "Services\OrderService\EasyOrder.Api\EasyOrder.Api.csproj", "{A2515B78-5C72-4D67-ABA3-36D8C1E03F15}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "easyorder-microservices", "easyorder-microservices", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
