@@ -35,10 +35,17 @@ namespace EasyOrder.Infrastructure.Extentions
             });
             return services;
         }
-        public static WebApplication UseSwaggerUI(this WebApplication app)
+        public static WebApplication UseSwaggerWithUI(this WebApplication app)
         {
             app.UseSwagger();
-        //    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EasyOrderIdentity API v1"));
+
+            // now serve at /swagger
+            SwaggerUIBuilderExtensions.UseSwaggerUI(app, c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "EasyOrder API V1");
+                c.RoutePrefix = "swagger";
+            });
+
             return app;
         }
     }

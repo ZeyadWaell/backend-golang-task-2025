@@ -18,9 +18,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{9E834A5B-32CA-4A74-81AE-F95722D2BE3C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api-gateway", "api-gateway", "{0ED5BB30-98EF-4B7D-904A-8FECBFDF95B9}"
-	ProjectSection(SolutionItems) = preProject
-		ocelot.json = ocelot.json
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserService", "UserService", "{9B2A3D90-5D99-444A-B89D-E9782A1B6F64}"
 EndProject
