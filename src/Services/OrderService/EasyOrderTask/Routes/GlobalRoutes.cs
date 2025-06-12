@@ -16,4 +16,13 @@ namespace EasyOrder.Api.Routes
         public const string Delete = Base + "/{id}";
         public const string GetStatus = Base + "/{id}/status";
     }
+    public static class AdminOrderRoutes
+    {
+        public const string Base = GlobalRoutes.ApiVersion + "/admin/orders";
+        public const string GetAll = Base;
+        public const string GetById = Base + "/{id}";
+        public const string Update = Base + "/{id}/status";
+        public const string Delete = Base + "/{id}";
+        public const string DailyReport = Base + "/report/daily";
+    }
 }

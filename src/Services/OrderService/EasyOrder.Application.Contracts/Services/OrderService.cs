@@ -77,6 +77,7 @@ namespace EasyOrder.Application.Queries.Services
 
             order.Status = OrderStatus.Cancelled;
             _unitOfWork.OrdersRepository.Update(order);
+
             await _unitOfWork.SaveChangesAsync();
             return new SuccessResponse<object>("Order cancelled successfully", null, 200);
 
@@ -84,6 +85,7 @@ namespace EasyOrder.Application.Queries.Services
         public async Task<BaseApiResponse> GetOrderStatus(int id)
         {
             var order = await _unitOfWork.OrdersRepository.GetAsync(x => x.Id == id && x.CreatedBy == _currentUserService.UserId);
+
             if (order == null)
                 return ErrorResponse.NotFound("Order not found");
 
