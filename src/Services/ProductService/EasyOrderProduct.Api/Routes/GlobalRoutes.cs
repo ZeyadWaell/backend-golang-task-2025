@@ -14,4 +14,9 @@ namespace EasyOrderProduct.Api.Routes
         public const string Update = Base + "/{id}";
         public const string CheckInventory = Base + "/{id}/inventory";
     }
+    public static class AdminRoutes
+    {
+        public const string Base = GlobalRoutes.ApiVersion + "/admin";
+        public const string GetAllLowStock = Base + "/inventory/low-stock";
+    }
 }

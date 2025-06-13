@@ -15,7 +15,7 @@ namespace EasyOrderProduct.Infrastructure.Extentions
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "EasyOrderIdentity API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Easy Product API", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -24,25 +24,35 @@ namespace EasyOrderProduct.Infrastructure.Extentions
                     Scheme = "bearer",
                     BearerFormat = "JWT"
                 });
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
                     {
-                        new OpenApiSecurityScheme {
-                            Reference = new OpenApiReference {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
                                 Type = ReferenceType.SecurityScheme,
-                                Id   = "Bearer"
+                                Id = "Bearer"
                             }
                         },
                         Array.Empty<string>()
                     }
                 });
             });
+
             return services;
         }
+
         public static WebApplication UseSwaggerUI(this WebApplication app)
         {
+            // 1) Serve Swagger JSON and UI before authentication
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EasyOrderIdentity API v1"));
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Easy Product API v1");
+            });
 
+            // 2) Remap the swagger.json endpoint to allow anonymous access
             app.MapGet("/swagger/v1/swagger.json", async context =>
             {
                 var provider = context.RequestServices.GetRequiredService<ISwaggerProvider>();
@@ -53,7 +63,7 @@ namespace EasyOrderProduct.Infrastructure.Extentions
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 });
             })
-           .AllowAnonymous();
+            .AllowAnonymous();
 
             return app;
         }

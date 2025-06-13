@@ -4,19 +4,38 @@
       "DownstreamPathTemplate": "/v1/api/products/{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 7003 }
+        {
+          "Host": "localhost",
+          "Port": 7003
+        }
       ],
-      "UpstreamPathTemplate": "/products/{everything}",
+      "UpstreamPathTemplate": "/api/v1/products/{everything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
+      "SwaggerKey": "product"
+    },
+    {
+      "DownstreamPathTemplate": "/v1/api/admin/inventory/low-stock",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7003
+        }
+      ],
+      "UpstreamPathTemplate": "/api/v1/admin/inventory/low-stock",
+      "UpstreamHttpMethod": [ "Get" ],
       "SwaggerKey": "product"
     },
     {
       "DownstreamPathTemplate": "/swagger/v1/swagger.json",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
-        { "Host": "localhost", "Port": 7003 }
+        {
+          "Host": "localhost",
+          "Port": 7003
+        }
       ],
-      "UpstreamPathTemplate": "/products/swagger/v1/swagger.json",
+      "UpstreamPathTemplate": "/api/v1/products/swagger/v1/swagger.json",
       "UpstreamHttpMethod": [ "Get" ]
     }
   ]

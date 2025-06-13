@@ -24,30 +24,35 @@ namespace EasyOrder.Infrastructure.Extentions
                     Scheme = "bearer",
                     BearerFormat = "JWT"
                 });
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
                     {
-                        new OpenApiSecurityScheme {
-                            Reference = new OpenApiReference {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
                                 Type = ReferenceType.SecurityScheme,
-                                Id   = "Bearer"
+                                Id = "Bearer"
                             }
                         },
                         Array.Empty<string>()
                     }
                 });
             });
+
             return services;
         }
-        public static WebApplication UseSwaggerWithUI(this WebApplication app)
-        {
-            app.UseSwagger();
 
-            // now serve at /swagger
-            SwaggerUIBuilderExtensions.UseSwaggerUI(app, c =>
+        public static WebApplication UseSwaggerUI(this WebApplication app)
+        {
+            // 1) Serve Swagger JSON and UI before authentication
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "EasyOrder API V1");
-                c.RoutePrefix = "swagger";
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "EasyOrderIdentity API v1");
             });
+
+            // 2) Remap the swagger.json endpoint to allow anonymous access
             app.MapGet("/swagger/v1/swagger.json", async context =>
             {
                 var provider = context.RequestServices.GetRequiredService<ISwaggerProvider>();
@@ -58,7 +63,8 @@ namespace EasyOrder.Infrastructure.Extentions
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 });
             })
-           .AllowAnonymous();
+            .AllowAnonymous();
+
             return app;
         }
     }

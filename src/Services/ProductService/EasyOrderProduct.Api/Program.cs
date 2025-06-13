@@ -21,12 +21,15 @@ builder.Services
     .AddSwaggerWithJwt()
     .AddControllers();
 
-
 builder.Services.AddMediatR(cfg =>
 {
-    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());                         
-    cfg.RegisterServicesFromAssembly(typeof(GetProductInventoryQueryHandler).Assembly);         
-    cfg.RegisterServicesFromAssembly(typeof(CreateProductCommandHandler).Assembly); 
+    cfg.RegisterServicesFromAssemblyContaining<CreateProductCommandHandler>();
+    cfg.RegisterServicesFromAssemblyContaining<UpdateProductCommandHandler>();
+
+    cfg.RegisterServicesFromAssemblyContaining<GetAllProductQueryHandler>();
+    cfg.RegisterServicesFromAssemblyContaining<GetProductByIdQueryHandler>();
+    cfg.RegisterServicesFromAssemblyContaining<GetProductInventoryQueryHandler>();
+    cfg.RegisterServicesFromAssemblyContaining<GetAllLowStockQueryHandler>();
 });
 
 var app = builder.Build();

@@ -22,6 +22,7 @@ namespace EasyOrderProduct.Api.Controllers
         {
             _mediator = mediator;
         }
+
         [HttpPost]
         [Route(ProductRoutes.Create)]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
@@ -31,6 +32,7 @@ namespace EasyOrderProduct.Api.Controllers
             var result = await _mediator.Send(product);
             return StatusCode(result.StatusCode, result);
         }
+
         [HttpGet]
         [Route(ProductRoutes.GetById)]
         [AllowAnonymous]
@@ -40,6 +42,7 @@ namespace EasyOrderProduct.Api.Controllers
             var result = await _mediator.Send(product);
             return StatusCode(result.StatusCode, result);
         }
+
         [HttpGet]
         [Route(ProductRoutes.GetAll)]
         [AllowAnonymous]
@@ -49,6 +52,7 @@ namespace EasyOrderProduct.Api.Controllers
             var result = await _mediator.Send(products);
             return StatusCode(result.StatusCode, result);
         }
+
         [HttpPut]
         [Route(ProductRoutes.Update)]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
@@ -59,6 +63,7 @@ namespace EasyOrderProduct.Api.Controllers
             var result = await _mediator.Send(product);
             return StatusCode(result.StatusCode, result);
         }
+
         [HttpGet]
         [Route(ProductRoutes.CheckInventory)]
         [AllowAnonymous]

@@ -9,7 +9,7 @@
           "Port": 7002
         }
       ],
-      "UpstreamPathTemplate": "/users/{everything}",
+      "UpstreamPathTemplate": "/api/v1/users/{everything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
       "SwaggerKey": "users"
     },
@@ -22,7 +22,7 @@
           "Port": 7002
         }
       ],
-      "UpstreamPathTemplate": "/users/swagger/v1/swagger.json",
+      "UpstreamPathTemplate": "/api/v1/users/swagger/v1/swagger.json",
       "UpstreamHttpMethod": [ "Get" ]
     }
   ]

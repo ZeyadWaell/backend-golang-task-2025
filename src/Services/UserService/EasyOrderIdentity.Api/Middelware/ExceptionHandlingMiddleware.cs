@@ -28,7 +28,6 @@ namespace EasyOrderIdentity.Api.Middleware
             var stopwatch = Stopwatch.StartNew();
             var requestBody = await ReadRequestBodyAsync(context.Request);
 
-            // Buffer the response so we can overwrite on errors
             var originalBody = context.Response.Body;
             await using var buffer = new MemoryStream();
             context.Response.Body = buffer;
