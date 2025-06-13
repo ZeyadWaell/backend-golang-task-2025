@@ -31,7 +31,6 @@ namespace EasyOrder.Domain.Entities
         public PaymentStatue Status { get; set; }    
 
         public DateTime? ProcessedAt { get; set; }
-
         public Order Order { get; set; }
     }
 }

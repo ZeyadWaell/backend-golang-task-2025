@@ -36,7 +36,17 @@ public static class DependencyInjection
         services.AddDbContext<WriteDbContext>(opts =>
             opts.UseSqlServer(configuration.GetConnectionString("WriteDatabase")));
     }
+    private static void AddGrpcClients(IServiceCollection services, IConfiguration configuration)
+    {
+        var inventoryUrl = configuration["GrpcSettings:InventoryUrl"]; // e.g. "https://localhost:7003"
 
+        services.AddSingleton(services =>
+        {
+            var channel = GrpcChannel.ForAddress(inventoryUrl);
+            return new InventoryService.InventoryServiceClient(channel);
+        });
+
+    }
     private static void AddRepositories(IServiceCollection services)
     {
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

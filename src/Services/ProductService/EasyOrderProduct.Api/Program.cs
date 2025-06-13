@@ -2,8 +2,10 @@ using AutoMapper;
 using EasyOrderProduct.Api.Middelware;
 using EasyOrderProduct.Application.Command.Commands;
 using EasyOrderProduct.Application.Command.Handlers;
+using EasyOrderProduct.Application.Contract.Interfaces.GrpsServices;
 using EasyOrderProduct.Application.Queries.Handlers;
 using EasyOrderProduct.Infrastructure.Extentions;
+using EasyOrderProduct.Infrastructure.GrpcClients;
 using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,15 @@ builder.Services
     .AddJwtAuthentication(builder.Configuration)
     .AddSwaggerWithJwt()
     .AddControllers();
+
+
+builder.Services.AddSingleton(provider =>
+{
+    var channel = GrpcChannel.ForAddress("https://localhost:7003");
+    return new InventoryService.InventoryServiceClient(channel);
+});
+
+builder.Services.AddScoped<IInventoryCheckerService, GrpcInventoryChecker>();
 
 builder.Services.AddMediatR(cfg =>
 {
