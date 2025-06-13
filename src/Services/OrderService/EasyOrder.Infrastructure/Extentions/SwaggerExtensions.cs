@@ -1,7 +1,10 @@
 ﻿using EasyOrder.Infrastructure.Extentions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Swagger;
+using System.Text.Json;
 
 namespace EasyOrder.Infrastructure.Extentions
 {
@@ -45,7 +48,17 @@ namespace EasyOrder.Infrastructure.Extentions
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "EasyOrder API V1");
                 c.RoutePrefix = "swagger";
             });
-
+            app.MapGet("/swagger/v1/swagger.json", async context =>
+            {
+                var provider = context.RequestServices.GetRequiredService<ISwaggerProvider>();
+                var swaggerDoc = provider.GetSwagger("v1");
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsJsonAsync(swaggerDoc, new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                });
+            })
+           .AllowAnonymous();
             return app;
         }
     }

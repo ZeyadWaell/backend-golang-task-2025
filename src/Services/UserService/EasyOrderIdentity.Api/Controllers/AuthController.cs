@@ -20,9 +20,8 @@ namespace EasyOrderIdentity.Api.Controllers
             {
                 _authService = authService;
             }
-
-            [HttpPost(AuthRoutes.Login)]
             [AllowAnonymous]
+            [HttpPost(AuthRoutes.Login)]
             public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
             {
                 var response = await _authService.LoginAsync(request);

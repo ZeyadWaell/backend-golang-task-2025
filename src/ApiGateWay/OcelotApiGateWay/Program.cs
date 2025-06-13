@@ -2,6 +2,7 @@
 using Ocelot.Middleware;
 using MMLib.SwaggerForOcelot.DependencyInjection;
 using MMLib.Ocelot.Provider.AppConfiguration;
+using OcelotApiGateWay;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +24,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 app.MapGet("/", () => "Hello World!");
-
+app.UseMiddleware<SwaggerDebugMiddleware>();
 #region Ocelot
 app.UseSwaggerForOcelotUI(opt =>
 {

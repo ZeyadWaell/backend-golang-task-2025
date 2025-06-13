@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -10,42 +12,103 @@ namespace EasyOrderIdentity.Api.Extensions
 {
     public static class JwtExtensions
     {
-        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddJwtAuthentication(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
-            var s = configuration.GetSection("Jwt");
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(o =>
+            var jwtSection = configuration.GetSection("Jwt");
+            var issuer = jwtSection["Issuer"];
+            var audience = jwtSection["Audience"];
+            var key = jwtSection["Key"];
+
+            if (string.IsNullOrWhiteSpace(issuer)
+             || string.IsNullOrWhiteSpace(audience)
+             || string.IsNullOrWhiteSpace(key))
+            {
+                throw new InvalidOperationException("JWT settings are missing or invalid in configuration.");
+            }
+
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
                 {
-                    o.TokenValidationParameters = new TokenValidationParameters
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = s["Issuer"],
-                        ValidAudience = s["Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(s["Key"]))
+                        ValidIssuer = issuer,
+                        ValidAudience = audience,
+                        IssuerSigningKey = signingKey
                     };
-                    o.Events = new JwtBearerEvents
+
+                    options.Events = new JwtBearerEvents
                     {
-                        OnMessageReceived = ctx =>
+                        OnMessageReceived = context =>
                         {
-                            var h = ctx.Request.Headers["Authorization"].ToString();
-                            if (string.IsNullOrEmpty(h) || !h.StartsWith("Bearer "))
-                                throw new UnauthorizedAccessException("No Bearer token provided");
+                            var http = context.HttpContext;
+
+                            // 1) If this endpoint allows anonymous, skip JWT
+                            var endpoint = http.GetEndpoint();
+                            if (endpoint?.Metadata.GetMetadata<AllowAnonymousAttribute>() != null)
+                            {
+                                context.NoResult();
+                                return Task.CompletedTask;
+                            }
+
+                            // 2) Skip Swagger UI & JSON
+                            var path = http.Request.Path;
+                            if (path.StartsWithSegments("/swagger"))
+                            {
+                                context.NoResult();
+                                return Task.CompletedTask;
+                            }
+
+                            // 3) Otherwise enforce Bearer token
+                            var header = http.Request.Headers["Authorization"].ToString();
+                            if (string.IsNullOrWhiteSpace(header) ||
+                                !header.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                            {
+                                context.NoResult();
+                                http.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                                return http.Response.WriteAsync(
+                                    "{\"error\":\"No Bearerss token provided\"}");
+                            }
+
                             return Task.CompletedTask;
                         },
-                        OnAuthenticationFailed = ctx =>
-                            throw new UnauthorizedAccessException($"Token validation failed: {ctx.Exception.Message}"),
-                        OnChallenge = ctx =>
+
+                        OnAuthenticationFailed = context =>
                         {
-                            ctx.HandleResponse();
-                            throw new UnauthorizedAccessException("You are not authenticated");
+                            context.NoResult();
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            context.Response.ContentType = "application/json";
+                            return context.Response.WriteAsync(
+                                $"{{\"error\":\"Token validation failed: {context.Exception.Message}\"}}");
                         },
-                        OnForbidden = ctx =>
-                            throw new UnauthorizedAccessException("You do not have permission"),
+
+                        OnChallenge = context =>
+                        {
+                            context.HandleResponse();
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            context.Response.ContentType = "application/json";
+                            return context.Response.WriteAsync(
+                                "{\"error\":\"You are not authenticated\"}");
+                        },
+
+                        OnForbidden = context =>
+                        {
+                            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                            context.Response.ContentType = "application/json";
+                            return context.Response.WriteAsync(
+                                "{\"error\":\"You do not have permission\"}");
+                        }
                     };
                 });
+
             return services;
         }
     }

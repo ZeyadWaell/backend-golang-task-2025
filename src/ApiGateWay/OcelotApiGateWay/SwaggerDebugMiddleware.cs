@@ -1,53 +1,49 @@
-﻿namespace OcelotApiGateWay
+﻿using System.Text.Json;
+
+namespace OcelotApiGateWay
 {
     public class SwaggerDebugMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly IConfiguration _config;
         private readonly ILogger<SwaggerDebugMiddleware> _logger;
 
-        public SwaggerDebugMiddleware(
-            RequestDelegate next,
-            IConfiguration config,
-            ILogger<SwaggerDebugMiddleware> logger)
+        public SwaggerDebugMiddleware(RequestDelegate next, ILogger<SwaggerDebugMiddleware> logger)
         {
             _next = next;
-            _config = config;
             _logger = logger;
         }
 
-        public async Task InvokeAsync(HttpContext context)
+        public async Task Invoke(HttpContext ctx)
         {
-            // Only log when hitting Swagger UI or docs endpoint
-            if (context.Request.Path.StartsWithSegments("/swagger"))
+            // only intercept the swagger docs endpoints
+            if (!ctx.Request.Path.StartsWithSegments("/swagger/docs"))
             {
-                // Read the "SwaggerEndPoints" section from configuration
-                var endpointsSection = _config.GetSection("SwaggerEndPoints");
-                var swaggerEndpoints = endpointsSection.Get<List<Dictionary<string, string>>>();
-
-                if (swaggerEndpoints == null)
-                {
-                    _logger.LogError("⚠️ SwaggerEndPoints section is NULL. File not loaded or key missing.");
-                }
-                else if (!swaggerEndpoints.Any())
-                {
-                    _logger.LogWarning("⚠️ SwaggerEndPoints section is present but empty.");
-                }
-                else
-                {
-                    foreach (var ep in swaggerEndpoints)
-                    {
-                        // Expect keys like "Key" and "Url"
-                        ep.TryGetValue("Key", out var key);
-                        ep.TryGetValue("Url", out var url);
-
-                        _logger.LogInformation("🔍 Loaded Swagger endpoint: {Key} -> {Url}",
-                            key ?? "(no Key)", url ?? "(no Url)");
-                    }
-                }
+                await _next(ctx);
+                return;
             }
 
-            await _next(context);
+            try
+            {
+                await _next(ctx);
+            }
+            catch (Exception ex)
+            {
+                // log full details server-side
+                _logger.LogError(ex, "Unhandled exception while proxying {Path}", ctx.Request.Path);
+
+                // return full details client-side (DEV only!)
+                ctx.Response.StatusCode = 500;
+                ctx.Response.ContentType = "application/json";
+
+                var errorPayload = new
+                {
+                    ex.Message,
+                    ex.StackTrace,
+                    Inner = ex.InnerException?.ToString()
+                };
+
+                await ctx.Response.WriteAsync(JsonSerializer.Serialize(errorPayload));
+            }
         }
     }
 }

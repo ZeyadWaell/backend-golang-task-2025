@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.AspNetCore.Http;
+using System.Text.Json;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace EasyOrderIdentity.Infrastructure.ProgramServices
 {
@@ -25,24 +24,47 @@ namespace EasyOrderIdentity.Infrastructure.ProgramServices
                     Scheme = "bearer",
                     BearerFormat = "JWT"
                 });
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
                     {
-                        new OpenApiSecurityScheme {
-                            Reference = new OpenApiReference {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
                                 Type = ReferenceType.SecurityScheme,
-                                Id   = "Bearer"
+                                Id = "Bearer"
                             }
                         },
                         Array.Empty<string>()
                     }
                 });
             });
+
             return services;
         }
+
         public static WebApplication UseSwaggerUI(this WebApplication app)
         {
+            // 1) Serve Swagger JSON and UI before authentication
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EasyOrderIdentity API v1"));
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "EasyOrderIdentity API v1");
+            });
+
+            // 2) Remap the swagger.json endpoint to allow anonymous access
+            app.MapGet("/swagger/v1/swagger.json", async context =>
+            {
+                var provider = context.RequestServices.GetRequiredService<ISwaggerProvider>();
+                var swaggerDoc = provider.GetSwagger("v1");
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsJsonAsync(swaggerDoc, new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                });
+            })
+            .AllowAnonymous();
+
             return app;
         }
     }

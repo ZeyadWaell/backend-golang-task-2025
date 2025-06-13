@@ -28,12 +28,22 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(GetProductInventoryQueryHandler).Assembly);         
     cfg.RegisterServicesFromAssembly(typeof(CreateProductCommandHandler).Assembly); 
 });
+
 var app = builder.Build();
 
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
-app.UseSwaggerUI();
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "EasyOrder API v1");
+    c.RoutePrefix = "swagger";   
+});
+
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 app.Run();

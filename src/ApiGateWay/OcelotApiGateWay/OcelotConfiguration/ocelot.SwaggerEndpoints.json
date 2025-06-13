@@ -1,13 +1,39 @@
 {
   "SwaggerEndPoints": [
     {
-      "Key": "auth",
+      "Key": "order",
+      "Config": [
+        {
+          "Name": "Order API",
+          "Version": "v1",
+          "Service": {
+            "Name": "order",
+            "Path": "/swagger/v1/swagger.json"
+          }
+        }
+      ]
+    },
+    {
+      "Key": "users",
       "Config": [
         {
           "Name": "Auth Web API",
           "Version": "v1",
           "Service": {
-            "Name": "auth",
+            "Name": "users",
+            "Path": "/swagger/v1/swagger.json"
+          }
+        }
+      ]
+    },
+    {
+      "Key": "product",
+      "Config": [
+        {
+          "Name": "Product API",
+          "Version": "v1",
+          "Service": {
+            "Name": "product",
             "Path": "/swagger/v1/swagger.json"
           }
         }

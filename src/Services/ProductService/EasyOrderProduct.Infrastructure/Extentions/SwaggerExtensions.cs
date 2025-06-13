@@ -1,7 +1,10 @@
 ﻿using EasyOrderProduct.Infrastructure.Extentions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Swagger;
+using System.Text.Json;
 
 namespace EasyOrderProduct.Infrastructure.Extentions
 {
@@ -39,6 +42,19 @@ namespace EasyOrderProduct.Infrastructure.Extentions
         {
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EasyOrderIdentity API v1"));
+
+            app.MapGet("/swagger/v1/swagger.json", async context =>
+            {
+                var provider = context.RequestServices.GetRequiredService<ISwaggerProvider>();
+                var swaggerDoc = provider.GetSwagger("v1");
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsJsonAsync(swaggerDoc, new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                });
+            })
+           .AllowAnonymous();
+
             return app;
         }
     }

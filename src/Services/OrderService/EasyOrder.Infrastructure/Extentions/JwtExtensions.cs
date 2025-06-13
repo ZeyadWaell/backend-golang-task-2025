@@ -43,10 +43,9 @@ namespace EasyOrder.Infrastructure.Extentions
                                 return Task.CompletedTask;
                             }
 
-                            // original logic
                             var h = ctx.Request.Headers["Authorization"].ToString();
                             if (string.IsNullOrEmpty(h) || !h.StartsWith("Bearer "))
-                                throw new UnauthorizedAccessException("No Bearer token provided");
+                                throw new UnauthorizedAccessException("Nos Bearer token provided");
                             return Task.CompletedTask;
                         },
                         OnAuthenticationFailed = ctx =>
