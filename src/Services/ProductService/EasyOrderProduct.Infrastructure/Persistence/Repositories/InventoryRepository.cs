@@ -1,6 +1,6 @@
 ﻿using EasyOrderProduct.Application.Contract.DTOs.Responses;
+using EasyOrderProduct.Application.Contract.Interfaces.Repository;
 using EasyOrderProduct.Application.Contracts.DTOs.Responses.Global;
-using EasyOrderProduct.Application.Contracts.Interfaces;
 using EasyOrderProduct.Domain.Entities;
 using EasyOrderProduct.Infrastructure.Persistence.Context;
 using EasyOrderProduct.Infrastructure.Persistence.Repositories.Main;

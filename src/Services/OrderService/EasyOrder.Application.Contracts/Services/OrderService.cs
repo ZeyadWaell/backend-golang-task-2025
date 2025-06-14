@@ -2,11 +2,13 @@
 using EasyOrder.Application.Contracts.DTOs;
 using EasyOrder.Application.Contracts.DTOs.Responses.Global;
 using EasyOrder.Application.Contracts.Filters;
+using EasyOrder.Application.Contracts.Interfaces.GrpcServices;
 using EasyOrder.Application.Contracts.Interfaces.InternalServices;
 using EasyOrder.Application.Contracts.Interfaces.Main;
 using EasyOrder.Application.Contracts.Interfaces.Services;
 using EasyOrder.Domain.Entities;
 using EasyOrder.Domain.Enums;
+using EasyOrderProduct.Application.Contracts.Protos;
 
 
 namespace EasyOrder.Application.Queries.Services
@@ -16,12 +18,13 @@ namespace EasyOrder.Application.Queries.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrentUserService _currentUserService;
         private readonly IMapper _mapper;
-
-        public OrderService(IUnitOfWork unitOfWork, ICurrentUserService currentUserService, IMapper mapper)
+        private readonly IInventoryChecker _inventoryChecker;
+        public OrderService(IUnitOfWork unitOfWork, ICurrentUserService currentUserService, IMapper mapper, IInventoryChecker inventoryChecker = null)
         {
             _unitOfWork = unitOfWork;
             _currentUserService = currentUserService;
             _mapper = mapper;
+            _inventoryChecker = inventoryChecker;
         }
 
         public async Task<BaseApiResponse> GetAllOrderAsync(PaginationFilter paginationFilter)
@@ -52,6 +55,18 @@ namespace EasyOrder.Application.Queries.Services
 
             if (dto.Items.Any(i => i.Quantity <= 0))
                 return ErrorResponse.BadRequest("Each item quantity must be at least 1");
+
+            foreach (var item in dto.Items)
+            {
+                var isAvailable = await _inventoryChecker.CheckAvailabilityAsync(
+                    item.ProductItemId);
+
+                if (!isAvailable)
+                    return ErrorResponse.BadRequest(
+                        $"ProductItem {item.ProductItemId} is out of stock");
+            }
+
+            var checkedItems = await _inventoryChecker.CheckAvailabilityAsync(dto.Items.Select(x=>x.ProductItemId).FirstOrDefault());
 
             var order = _mapper.Map<Order>(dto);
 

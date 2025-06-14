@@ -8,6 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.31.1" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.71.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.72.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="MediatR" Version="12.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
@@ -18,6 +24,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EasyOrder.Domain\EasyOrder.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Generates both server base and client stubs -->
+    <Protobuf Include="Protos\inventory.proto" GrpcServices="Both" />
   </ItemGroup>
 
 </Project>

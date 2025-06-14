@@ -3,7 +3,7 @@ using EasyOrderProduct.Application.Contracts.Interfaces.Main;
 using EasyOrderProduct.Domain.Entities;
 
 
-namespace EasyOrderProduct.Application.Contracts.Interfaces
+namespace EasyOrderProduct.Application.Contract.Interfaces.Repository
 {
     public interface IInventoryRepository : IGenericRepository<Inventory>
     {

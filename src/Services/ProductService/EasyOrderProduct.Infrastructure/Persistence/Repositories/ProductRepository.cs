@@ -1,4 +1,5 @@
-﻿using EasyOrderProduct.Application.Contracts.Interfaces;
+﻿using EasyOrderProduct.Application.Contract.Interfaces.Repository;
+using EasyOrderProduct.Application.Contracts.Interfaces;
 using EasyOrderProduct.Domain.Entities;
 using EasyOrderProduct.Infrastructure.Persistence.Context;
 using EasyOrderProduct.Infrastructure.Persistence.Repositories.Main;

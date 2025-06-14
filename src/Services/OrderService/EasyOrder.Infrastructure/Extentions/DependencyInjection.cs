@@ -1,14 +1,18 @@
 ﻿
+using EasyOrder.Application.Contracts.Interfaces.GrpcServices;
 using EasyOrder.Application.Contracts.Interfaces.InternalServices;
 using EasyOrder.Application.Contracts.Interfaces.Main;
 using EasyOrder.Application.Contracts.Interfaces.Repository;
 using EasyOrder.Application.Contracts.Interfaces.Services;
 using EasyOrder.Application.Contracts.Services;
 using EasyOrder.Application.Queries.Services;
-using EasyOrder.Infrastructure.Persistence.Context;       
+using EasyOrder.Infrastructure.GrpcClients;
+using EasyOrder.Infrastructure.Persistence.Context;
 using EasyOrder.Infrastructure.Persistence.Repositories;
 using EasyOrder.Infrastructure.Persistence.Repositories.Main;
 using EasyOrder.Infrastructure.Services.Internal;
+using EasyOrderProduct.Application.Contracts.Protos;
+using Grpc.Net.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +24,8 @@ namespace EasyOrder.Infrastructure.Extentions
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,IConfiguration configuration)
         {
+            AddGrpcClients(services, configuration);
+            AddGrpcsServices(services);
             AddServices(services);
             AddDatabaseContext(services, configuration);
             AddRepositories(services);
@@ -43,7 +49,20 @@ namespace EasyOrder.Infrastructure.Extentions
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
+        private static void AddGrpcClients(IServiceCollection services, IConfiguration configuration)
+        {
+            var inventoryUrl = configuration["GrpcSettings:InventoryUrl"];
 
+            services.AddSingleton(services =>
+            {
+                var channel = GrpcChannel.ForAddress(inventoryUrl);
+                return new InventoryChecker.InventoryCheckerClient(channel);
+            });
+        }
+        private static void AddGrpcsServices(IServiceCollection services)
+        {
+            services.AddScoped<IInventoryChecker, GrpcInventoryChecker>();
+        }
         private static void AddServices(IServiceCollection services) 
         {
             services.AddScoped<IAdminService, AdminService>();

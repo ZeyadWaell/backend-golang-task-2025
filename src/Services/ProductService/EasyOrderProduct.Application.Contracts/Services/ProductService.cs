@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using EasyOrderProduct.Application.Contract.Interfaces.Services;
 using EasyOrderProduct.Application.Contracts.DTOs.Responses;
 using EasyOrderProduct.Application.Contracts.DTOs.Responses.Global;
 using EasyOrderProduct.Application.Contracts.Filters;
-using EasyOrderProduct.Application.Contracts.Interfaces;
 using EasyOrderProduct.Application.Contracts.Interfaces.InternalServices;
 using EasyOrderProduct.Application.Contracts.Interfaces.Main;
 using EasyOrderProduct.Domain.Entities;

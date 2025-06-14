@@ -11,7 +11,8 @@ namespace EasyOrder.Application.Contracts.DTOs
     public class CreateOrderDto
     {
 
-        [Required, MaxLength(3)]
+        [Required]
+        [EnumDataType(typeof(Currency))]
         public Currency Currency { get; set; }
 
         /// <summary>

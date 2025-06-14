@@ -1,6 +1,6 @@
 ﻿using EasyOrderProduct.Application.Command.Commands;
+using EasyOrderProduct.Application.Contract.Interfaces.Services;
 using EasyOrderProduct.Application.Contracts.DTOs.Responses.Global;
-using EasyOrderProduct.Application.Contracts.Interfaces;
 using EasyOrderProduct.Application.Contracts.Services;
 using MediatR;
 using System;

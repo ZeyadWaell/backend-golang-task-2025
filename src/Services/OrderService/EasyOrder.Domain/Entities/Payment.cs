@@ -13,7 +13,7 @@ namespace EasyOrder.Domain.Entities
     public class Payment : BaseSoftDelete
     {
         [Key, ForeignKey(nameof(Order))]
-        public Guid OrderId { get; set; }
+        public int OrderId { get; set; }
 
         [Required, MaxLength(200)]
         public Guid TransactionId { get; set; }

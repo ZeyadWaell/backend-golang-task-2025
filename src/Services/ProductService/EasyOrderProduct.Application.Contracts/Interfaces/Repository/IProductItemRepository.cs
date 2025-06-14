@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EasyOrderProduct.Application.Contracts.Interfaces
+namespace EasyOrderProduct.Application.Contract.Interfaces.Repository
 {
-    public interface IProductRepository : IGenericRepository<Product>
+    public interface IProductItemRepository : IGenericRepository<ProductItem>
     {
-        Task<Product> GetWithItemsAndInventoryAsync(int productId);
+        Task<bool> CheckAvailabilityAsync(int productItemId);
     }
 }

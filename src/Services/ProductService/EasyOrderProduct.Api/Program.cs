@@ -1,12 +1,10 @@
-using AutoMapper;
 using EasyOrderProduct.Api.Middelware;
-using EasyOrderProduct.Application.Command.Commands;
 using EasyOrderProduct.Application.Command.Handlers;
 using EasyOrderProduct.Application.Contract.Interfaces.GrpsServices;
 using EasyOrderProduct.Application.Queries.Handlers;
 using EasyOrderProduct.Infrastructure.Extentions;
-using EasyOrderProduct.Infrastructure.GrpcClients;
-using System.Reflection;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -23,14 +21,15 @@ builder.Services
     .AddSwaggerWithJwt()
     .AddControllers();
 
+builder.Services.AddGrpc();
 
-builder.Services.AddSingleton(provider =>
-{
-    var channel = GrpcChannel.ForAddress("https://localhost:7003");
-    return new InventoryService.InventoryServiceClient(channel);
-});
+//builder.Services.AddSingleton(provider =>
+//{
+//    var channel = GrpcChannel.ForAddress("https://localhost:7003");
+//    return new InventoryService.InventoryServiceClient(channel);
+//});
 
-builder.Services.AddScoped<IInventoryCheckerService, GrpcInventoryChecker>();
+//builder.Services.AddScoped<IInventoryCheckerService, GrpcInventoryChecker>();
 
 builder.Services.AddMediatR(cfg =>
 {
@@ -43,12 +42,25 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblyContaining<GetAllLowStockQueryHandler>();
 });
 
+builder.WebHost.ConfigureKestrel(opts =>
+{
+    opts.ListenLocalhost(7003, lo =>
+    {
+        lo.Protocols = HttpProtocols.Http2;
+        lo.UseHttps();
+    });
+});
+
+builder.Services.AddGrpc(o =>
+{
+    o.EnableDetailedErrors = true;
+});
+
 var app = builder.Build();
 
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "EasyOrder API v1");
@@ -60,4 +72,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapGrpcService<InventoryCheckerService>();
+app.MapGet("/", () => "Inventory gRPC at https://localhost:7003"); app.UseSwagger();
+
 app.Run();

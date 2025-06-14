@@ -1,34 +1,35 @@
-﻿using EasyOrderProduct.Application.Contract.Interfaces.GrpsServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// EasyOrderProduct.Infrastructure/Grpc/InventoryCheckerService.cs
+using EasyOrderProduct.Application.Contract.Interfaces.Repository;
+using EasyOrderProduct.Application.Contract;
+using Grpc.Core;
+using Microsoft.Extensions.Logging;
+using EasyOrderProduct.Application.Contracts.Protos;
+using EasyOrderProduct.Application.Contracts.Interfaces.Main;
 
-namespace EasyOrderProduct.Infrastructure.GrpcClients
+public class InventoryCheckerService : InventoryChecker.InventoryCheckerBase
 {
-    public class GrpcInventoryChecker : IInventoryCheckerService
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<InventoryCheckerService> _logger;
+
+    public InventoryCheckerService(ILogger<InventoryCheckerService> logger, IUnitOfWork unitOfWork)
     {
-        private readonly InventoryService.InventoryServiceClient _client;
+        _logger = logger;
+        _unitOfWork = unitOfWork;
+    }
 
-        public GrpcInventoryChecker(InventoryService.InventoryServiceClient client)
+    public override async Task<InventoryResponse> CheckAvailability(InventoryRequest request,ServerCallContext context)
+    {
+        var productItemCheck = await _unitOfWork.ProductItemRepository.AnyAsync(x => x.Id == request.ProductItemId);
+
+        if(!productItemCheck)
+            throw new RpcException(new Status(StatusCode.NotFound, $"Product item with ID {request.ProductItemId} not found"));
+    
+        var available = await _unitOfWork.ProductItemRepository.CheckAvailabilityAsync(request.ProductItemId);
+
+        return new InventoryResponse
         {
-            _client = client;
-        }
-
-        public async Task<bool> CheckAvailabilityAsync(Dictionary<int, int> productQuantities)
-        {
-            var request = new InventoryRequest
-            {
-                Products = { productQuantities.Select(p => new ProductQuantity
-                {
-                    ProductItemId = p.Key,
-                    Quantity = p.Value
-                }) }
-            };
-
-            var response = await _client.CheckAvailabilityAsync(request);
-            return response.IsAvailable;
-        }
+            IsAvailable = available,
+            Message = available ? "In stock" : "Out of stock"
+        };
     }
 }

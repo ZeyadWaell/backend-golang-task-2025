@@ -1,4 +1,4 @@
-﻿using EasyOrderProduct.Application.Contracts.Interfaces;
+﻿using EasyOrderProduct.Application.Contract.Interfaces.Repository;
 
 namespace EasyOrderProduct.Application.Contracts.Interfaces.Main
 {
@@ -7,6 +7,7 @@ namespace EasyOrderProduct.Application.Contracts.Interfaces.Main
 
         IInventoryRepository InventoryRepository { get; }
         IProductRepository ProductRepository { get; }
+        IProductItemRepository ProductItemRepository { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

@@ -1,5 +1,5 @@
-﻿using EasyOrderProduct.Application.Contracts.DTOs.Responses.Global;
-using EasyOrderProduct.Application.Contracts.Interfaces;
+﻿using EasyOrderProduct.Application.Contract.Interfaces.Services;
+using EasyOrderProduct.Application.Contracts.DTOs.Responses.Global;
 using EasyOrderProduct.Application.Queries.Queries;
 using MediatR;
 using System;

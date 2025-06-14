@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EasyOrderProduct.Application.Contracts.Interfaces
+namespace EasyOrderProduct.Application.Contract.Interfaces.Services
 {
     public interface IProductService
     {

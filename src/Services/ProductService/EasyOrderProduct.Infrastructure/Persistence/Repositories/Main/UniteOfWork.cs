@@ -1,4 +1,4 @@
-﻿using EasyOrderProduct.Application.Contracts.Interfaces;
+﻿using EasyOrderProduct.Application.Contract.Interfaces.Repository;
 using EasyOrderProduct.Application.Contracts.Interfaces.Main;
 using EasyOrderProduct.Infrastructure.Persistence.Context;
 using EasyOrderProduct.Infrastructure.Persistence.Repositories;
@@ -24,6 +24,8 @@ namespace EasyOrder.Infrastructure.Persistence.Repositories.Main
         #region public
         public IProductRepository ProductRepository { get; }
         public IInventoryRepository InventoryRepository { get; }
+
+        public IProductItemRepository ProductItemRepository { get; }
         #endregion
 
         public UnitOfWork(ReadDbContext readContext, WriteDbContext writeContext)
@@ -32,6 +34,7 @@ namespace EasyOrder.Infrastructure.Persistence.Repositories.Main
             _writeContext = writeContext;
             ProductRepository = new ProductRepository(_readContext, _writeContext);
             InventoryRepository = new InventoryRepository(_readContext, _writeContext);
+            ProductItemRepository = new ProductItemRepository(_readContext, _writeContext);
         }
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

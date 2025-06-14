@@ -1,14 +1,17 @@
 ﻿using EasyOrder.Infrastructure.Persistence.Repositories.Main;
-using EasyOrderProduct.Application.Contract.Interfaces;
+using EasyOrderProduct.Application.Contract.Interfaces.GrpsServices;
+using EasyOrderProduct.Application.Contract.Interfaces.Repository;
+using EasyOrderProduct.Application.Contract.Interfaces.Services;
 using EasyOrderProduct.Application.Contract.Services;
-using EasyOrderProduct.Application.Contracts.Interfaces;
 using EasyOrderProduct.Application.Contracts.Interfaces.InternalServices;
 using EasyOrderProduct.Application.Contracts.Interfaces.Main;
+using EasyOrderProduct.Application.Contracts.Protos;
 using EasyOrderProduct.Application.Contracts.Services;
 using EasyOrderProduct.Infrastructure.Persistence.Context;
 using EasyOrderProduct.Infrastructure.Persistence.Repositories;
 using EasyOrderProduct.Infrastructure.Persistence.Repositories.Main;
 using EasyOrderProduct.Infrastructure.Services.Internal;
+using Grpc.Net.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,23 +39,14 @@ public static class DependencyInjection
         services.AddDbContext<WriteDbContext>(opts =>
             opts.UseSqlServer(configuration.GetConnectionString("WriteDatabase")));
     }
-    private static void AddGrpcClients(IServiceCollection services, IConfiguration configuration)
-    {
-        var inventoryUrl = configuration["GrpcSettings:InventoryUrl"]; // e.g. "https://localhost:7003"
 
-        services.AddSingleton(services =>
-        {
-            var channel = GrpcChannel.ForAddress(inventoryUrl);
-            return new InventoryService.InventoryServiceClient(channel);
-        });
-
-    }
     private static void AddRepositories(IServiceCollection services)
     {
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IInventoryRepository, InventoryRepository>();
+        services.AddScoped<IProductItemRepository, ProductItemRepository>();
     }
 
     private static void AddServices(IServiceCollection services) 
