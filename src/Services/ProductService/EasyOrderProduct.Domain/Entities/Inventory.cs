@@ -15,4 +15,6 @@ public class Inventory : BaseSoftIntDelete
     public int QuantityOnHand { get; set; }
     [MaxLength(100)]
     public string WarehouseLocation { get; set; }
+    [Timestamp] public byte[] RowVersion { get; set; }
+
 }

@@ -4,18 +4,22 @@ using EasyOrder.Application.Contracts.Interfaces.InternalServices;
 using EasyOrder.Application.Contracts.Interfaces.Main;
 using EasyOrder.Application.Contracts.Interfaces.Repository;
 using EasyOrder.Application.Contracts.Interfaces.Services;
+using EasyOrder.Application.Contracts.Messaging;
 using EasyOrder.Application.Contracts.Services;
 using EasyOrder.Application.Queries.Services;
 using EasyOrder.Infrastructure.GrpcClients;
 using EasyOrder.Infrastructure.Persistence.Context;
 using EasyOrder.Infrastructure.Persistence.Repositories;
 using EasyOrder.Infrastructure.Persistence.Repositories.Main;
+using EasyOrder.Infrastructure.Sagas;
 using EasyOrder.Infrastructure.Services.Internal;
 using EasyOrderProduct.Application.Contracts.Protos;
 using Grpc.Net.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Rebus.Config;
+using Rebus.Routing.TypeBased;
 
 
 namespace EasyOrder.Infrastructure.Extentions
@@ -48,6 +52,23 @@ namespace EasyOrder.Infrastructure.Extentions
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+        }
+
+        private static void AddingMessaging(IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddRebus(busConfig => busConfig
+                .Transport(t => t.UseRabbitMq(configuration["RabbitMq"], "order-queue"))
+                .Routing(r => r.TypeBased()
+                    .Map<SagaMessages.ReserveInventory>("inventory-queue")
+                    .Map<SagaMessages.ChargePayment>("payment-queue")
+                    .Map<SagaMessages.ReleaseInventory>("inventory-queue"))
+                .Sagas(s => s.StoreInSqlServer(
+                    configuration.GetConnectionString("WriteDb"), // your DB conn
+                    dataTableName: "OrderSagas",                 // saga data table
+                    indexTableName: "OrderSagasIndex",            // saga index table
+                    automaticallyCreateTables: true))
+            );
+            services.AutoRegisterHandlersFromAssemblyOf<OrderSaga>();
         }
         private static void AddGrpcClients(IServiceCollection services, IConfiguration configuration)
         {

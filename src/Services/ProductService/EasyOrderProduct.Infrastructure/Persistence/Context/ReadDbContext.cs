@@ -16,7 +16,7 @@ namespace EasyOrderProduct.Infrastructure.Persistence.Context
         public DbSet<ProductItemOption> ProductItemOption { get; set; }
         public DbSet<Variation> Variation { get; set; }
         public DbSet<VariationOption> VariationOption { get; set; }
-
+        public DbSet<Inventory> inventories { get; set; }
 
         DbSet<TEntity> IAppDbContext.Set<TEntity>() => Set<TEntity>();
 

@@ -18,7 +18,22 @@ namespace EasyOrderProduct.Infrastructure.Persistence.Repositories
         public InventoryRepository(ReadDbContext readContext, WriteDbContext writeContext) : base(readContext, writeContext)
         {
         }
+        public async Task<bool> TryReserveAsync(int productItemId, int qty)
+        {
+            var affected = await _readContext.inventories
+                .Where(i => i.ProductItemId == productItemId && i.QuantityOnHand >= qty)
+                .ExecuteUpdateAsync(b => b
+                    .SetProperty(i => i.QuantityOnHand, i => i.QuantityOnHand - qty));
+            return affected > 0;
+        }
 
+        public async Task IncrementAsync(int productItemId, int qty)
+        {
+             await _readContext.inventories
+                .Where(i => i.ProductItemId == productItemId)
+                .ExecuteUpdateAsync(b => b
+                    .SetProperty(i => i.QuantityOnHand, i => i.QuantityOnHand + qty));
+        }
         public async Task<BaseApiResponse> GetLowStockAsync()
         {
             var result = await _readContext.ProductItem

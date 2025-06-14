@@ -6,9 +6,12 @@ using EasyOrder.Application.Contracts.Interfaces.GrpcServices;
 using EasyOrder.Application.Contracts.Interfaces.InternalServices;
 using EasyOrder.Application.Contracts.Interfaces.Main;
 using EasyOrder.Application.Contracts.Interfaces.Services;
+using EasyOrder.Application.Contracts.Messaging;
 using EasyOrder.Domain.Entities;
 using EasyOrder.Domain.Enums;
 using EasyOrderProduct.Application.Contracts.Protos;
+using MassTransit;
+using Ocelot.Infrastructure;
 
 
 namespace EasyOrder.Application.Queries.Services
@@ -19,12 +22,15 @@ namespace EasyOrder.Application.Queries.Services
         private readonly ICurrentUserService _currentUserService;
         private readonly IMapper _mapper;
         private readonly IInventoryChecker _inventoryChecker;
-        public OrderService(IUnitOfWork unitOfWork, ICurrentUserService currentUserService, IMapper mapper, IInventoryChecker inventoryChecker = null)
+        private readonly IBus _bus;
+
+        public OrderService(IUnitOfWork unitOfWork, ICurrentUserService currentUserService, IMapper mapper, IInventoryChecker inventoryChecker = null, IBus bus = null)
         {
             _unitOfWork = unitOfWork;
             _currentUserService = currentUserService;
             _mapper = mapper;
             _inventoryChecker = inventoryChecker;
+            _bus = bus;
         }
 
         public async Task<BaseApiResponse> GetAllOrderAsync(PaginationFilter paginationFilter)
@@ -74,6 +80,12 @@ namespace EasyOrder.Application.Queries.Services
             var saved = await _unitOfWork.SaveChangesAsync();
 
             var resultDto = _mapper.Map<OrderDetailsDto>(order);
+
+            await _bus.Publish(new SagaMessages.OrderCreated(
+                order.Id, dto.Items[0].ProductItemId,
+                dto.Items[0].Quantity, order.TotalAmount, dto.Currency));
+
+
             return new SuccessResponse<object>(
                 message: "Order created successfully",
                 data: resultDto,
