@@ -8,15 +8,15 @@ A high-performance, scalable **e-commerce backend** built with **.NET 8**, featu
 
 ### ⚙️ Microservices
 
-| Service                     | Description                                           | Pattern        |
-| --------------------------- | ----------------------------------------------------- | -------------- |
-| **OrderService**            | Handles order creation, updates, and cancellations    | ✅ CQRS + Clean |
-| **ProductInventoryService** | Manages product stock, reservations, and availability | ✅ CQRS + Clean |
-| **IdentityService**         | Manages user registration, login, JWT, and roles      | ❌ No CQRS      |
+| Service                     | Description                                                | Pattern        |
+| --------------------------- | ---------------------------------------------------------- | -------------- |
+| **OrderService**            | Handles order creation, updates, cancellations, incentives | ✅ CQRS + Clean |
+| **ProductInventoryService** | Manages product stock, reservations, and availability      | ✅ CQRS + Clean |
+| **IdentityService**         | Manages user registration, login, JWT, and roles           | ❌ No CQRS      |
 
 ---
 
-### 🧩 Folder Structure
+## 🧩 Folder Structure
 
 ```
 BackendSolution
@@ -29,7 +29,8 @@ BackendSolution
 │       │   ├── EasyOrderOrder.Application.Commands
 │       │   ├── EasyOrderOrder.Application.Queries
 │       │   ├── EasyOrderOrder.Domain
-│       │   └── EasyOrderOrder.Infrastructure
+│       │   ├── EasyOrderOrder.Infrastructure
+│       │   └── OrderService.Tests  # Unit & integration tests for OrderService
 │       │
 │       ├── ProductInventoryService
 │       │   ├── EasyOrderInventory.Api
@@ -37,13 +38,18 @@ BackendSolution
 │       │   ├── EasyOrderInventory.Application.Commands
 │       │   ├── EasyOrderInventory.Application.Queries
 │       │   ├── EasyOrderInventory.Domain
-│       │   └── EasyOrderInventory.Infrastructure
+│       │   ├── EasyOrderInventory.Infrastructure
+│       │   └── ProductInventoryService.Tests  # Unit & integration tests for InventoryService
 │       │
 │       └── IdentityService
 │           ├── EasyOrderIdentity.Api
 │           ├── EasyOrderIdentity.Application
 │           ├── EasyOrderIdentity.Domain
-│           └── EasyOrderIdentity.Infrastructure   
+│           ├── EasyOrderIdentity.Infrastructure
+│           └── IdentityService.Tests  # Unit & integration tests for IdentityService
+│
+├── Shared
+│   └── Common Auth, DTOs, Logging, Extensions
 │
 ├── API Gateway
 │   └── Ocelot configuration (Swagger merge, routing, rate limiting)
@@ -51,10 +57,7 @@ BackendSolution
 ├── docker
 │   └── docker-compose.yml, Dockerfiles, .env
 │
-└── tests
-    ├── OrderServiceTests
-    ├── InventoryServiceTests
-    └── IdentityServiceTests
+└── (tests moved into each service as shown above)
 ```
 
 ---
@@ -65,73 +68,163 @@ BackendSolution
 * 🔐 **JWT-based Authentication** via IdentityService
 * 📦 **gRPC Communication** for service-to-service calls
 * ⚙️ **Dockerized** deployment for consistent environments
-* 🛠️ **Hangfire** for error logging and background processing
+* 🛠️ **Hangfire** for error logging, background jobs, and payment retries
 * 📘 **Swagger** for API documentation
 * 🧪 **xUnit** for robust unit/integration testing
 
 ---
 
-## 🧠 Design Principles
+## 📖 Domain Entities & Class Diagram
+
+We define core models with soft-delete, concurrency controls, and relationships.
+
+```mermaid
+classDiagram
+    class Inventory {
+        +int Id
+        +int ProductItemId
+        +int QuantityOnHand
+        +string WarehouseLocation
+        +byte[] RowVersion
+    }
+    class Product {
+        +int Id
+        +string Name
+        +string Description
+        +decimal BasePrice
+    }
+    class ProductItem {
+        +int Id
+        +string Sku
+        +decimal? PriceOverride
+    }
+    class Variation {
+        +int Id
+        +string Name
+    }
+    class VariationOption {
+        +int Id
+        +string Value
+        +decimal PriceModifier
+    }
+    class Order {
+        +int Id
+        +OrderStatus Status
+        +decimal TotalAmount
+        +Currency Currency
+        +DateTime PlacedAt
+        +DateTime? PaidAt
+        +DateTime? CancelledAt
+    }
+    class OrderItem {
+        +int Id
+        +int OrderId
+        +int ProductItemId
+        +int Quantity
+        +decimal UnitPrice
+        +decimal SubTotal
+    }
+    class Payment {
+        +int OrderId
+        +Guid TransactionId
+        +decimal Amount
+        +PaymentMethod Method
+        +PaymentStatus Status
+        +DateTime? ProcessedAt
+    }
+    Inventory "1" -- "1" ProductItem
+    Product "1" -- "*" ProductItem
+    ProductItem "*" -- "*" VariationOption
+    Variation "1" -- "*" VariationOption
+    Order "1" -- "*" OrderItem
+    OrderItem "1" -- "1" ProductItem
+    Order "1" -- "1" Payment
+```
+
+All entities inherit from `BaseSoftIntDelete` or `BaseSoftDelete` (timestamps, audit, soft-delete).
+
+---
+
+## 🧠 Design Principles & Patterns
 
 ### ✅ CQRS (Order & Inventory)
 
-* **Write Models**: Commands handle create/update/delete via MediatR
-* **Read Models**: Queries return optimized projections for fast reads
-* **Separation of Concerns**: Handlers isolated for maintainability and testability
+* **Command Side**: Writes handled via MediatR command handlers in `Application.Commands`.
+* **Query Side**: Reads served by optimized projections in `Application.Queries`.
+* **Atomic Transactions**: Commands wrap updates across aggregates and external gRPC calls.
 
 ### 🧱 Clean Architecture
 
-* `Api`: Controllers, gRPC endpoints, middleware
-* `Application.Contracts`: DTOs, interfaces, Protos
-* `Application.Commands`: Command handlers (writes)
-* `Application.Queries`: Query handlers (reads)
-* `Domain`: Entities, value objects, aggregates
-* `Infrastructure`: Repos, EF DbContext, service implementations
+* **Api**: Controllers, gRPC services, middleware, EF Core interceptors
+* **Application.Contracts**: DTOs, Interfaces, Protos
+* **Application.Commands/Queries**: Business logic and handlers
+* **Domain**: Entities, domain events, business rules
+* **Infrastructure**: EF Core DbContexts, repositories, external service implementations
 
-### ❌ IdentityService: Clean Architecture (without CQRS)
+### 🛠 Structural Design Patterns
 
-* Layered CRUD for user and role management
-* JWT issuance, validation, and refresh flows
-* Role-based authorization via policies
+* **Dependency Injection**: Configures services, repositories, interceptors via built-in .NET DI.
+* **Repository Pattern**: `IRepository<T>` abstracts data access logic.
+* **Unit of Work**: `IUnitOfWork` batches multiple repository operations in one transaction.
+* **Factory Pattern**: Dynamically constructs instances (e.g., repository factories).
+* **Adapter Pattern**: Wraps external SDKs (e.g., payment gateways) into internal interfaces (`IPaymentClient`).
+* **Outbox Pattern**: Persists domain events in an outbox table for reliable asynchronous dispatch.
+* **Singleton Pattern**: Shared application settings (`IOptions<T>`) and single-instance services.
+
+### 💳 Behavioral Design Patterns
+
+* **Strategy Pattern**: Supports multiple payment methods by implementing `IPaymentStrategy` for each provider.
+
+---
+
+## 🔄 EF Core Interceptors & SaveChanges Hook
+
+A custom interceptor enforces:
+
+* **Permission Checks**: Validates user roles per entity before modifications.
+* **Audit Logging**: Populates `CreatedOn`, `ModifiedOn`, `CreatedBy`, `ModifiedBy`.
+
+```csharp
+options.AddInterceptors(new AuditAndPermissionInterceptor(currentUserService));
+```
+
+---
+
+## 🤝 Payment Processing & Hangfire
+
+1. **Charge Request**: `OrderService` calls `PaymentService` via gRPC.
+2. **Retry Mechanism**: Hangfire jobs retry on transient failures using exponential backoff.
+3. **Success Handling**: On successful payment, update `Order.PaidAt` and `Status`.
+4. **Failure Handling**: After configurable retries, log audit entry and alert administrators.
 
 ---
 
 ## 🎁 Order Incentive Handling
 
-To support promotional incentives (discount codes, loyalty points) when creating orders, we leverage the CQRS microservices and gRPC patterns:
+To apply promotions and loyalty incentives:
 
-1. **Why CQRS?**
+1. **ApplyIncentiveCommand**: Dispatched alongside `CreateOrderCommand`.
+2. **gRPC Validation**: OrderService invokes InventoryService or IncentiveService via gRPC to validate stock and promotion.
+3. **Domain Event**: Emits `OrderCreatedWithIncentive` for downstream projections (read models).
+4. **Read Model Update**: Queries reflect discounted totals and incentive usage.
 
-   * Incentive logic often involves complex business rules and multiple steps (validate code, calculate discount, update loyalty balances).
-   * Separating **Command** and **Query** models lets us keep write-side operations (order + incentive creation) decoupled from read-side projections (order history dashboards).
+> **Note**: Full RabbitMQ/Rebus integration for asynchronous messaging is deferred to Phase 2.
 
-2. **How it Works**
+---
 
-   * **OrderCommand**: The client submits an `ApplyIncentiveCommand` alongside `CreateOrderCommand` via MediatR in the OrderService.
-   * **Validation**: The command handler invokes a gRPC call to the ProductInventoryService (or a dedicated IncentiveService stub) to validate stock and incentive eligibility in a single transaction.
-   * **Domain Event**: Once validated, the handler emits an `OrderCreatedWithIncentive` domain event.
-   * **Event Projection**: A read-model projection updates the `OrderReadModel` and `IncentiveUsageReadModel` for reporting.
+## 👥 Data Seeding
 
-3. **gRPC Communication**
-
-   * The OrderService calls ProductInventoryService over gRPC to reserve stock and to resolve incentive details (e.g., discount amount).
-   * Responses include confirmation tokens and updated inventory levels.
-
-4. **Why Not RabbitMQ/Rebus Yet?**
-
-   * **Time Constraints**: Implementing a full message bus (RabbitMQ + Rebus) adds infrastructure complexity, CI/CD changes, and operational overhead.
-   * **Scope**: For MVP, synchronous gRPC calls combined with MediatR command dispatch meet performance and reliability needs.
-   * **Next Steps**: Asynchronous event publishing via a message broker will be added in Phase 2 for better decoupling and resilience.
+Default roles and users are seeded at application startup.
 
 ---
 
 ## 📬 gRPC Communication
 
-| From → To                       | Purpose                           |
-| ------------------------------- | --------------------------------- |
-| OrderService → InventoryService | Reserve/Release stock             |
-| InventoryService → OrderService | Confirm availability              |
-| ------------------------------- | --------------------------------- |
+| From → To                           | Purpose                        |
+| ----------------------------------- | ------------------------------ |
+| **OrderService → InventoryService** | Reserve or release stock       |
+| **InventoryService → OrderService** | Confirm availability           |
+| **OrderService → IdentityService**  | Verify user roles and policies |
 
 ---
 
@@ -142,29 +235,51 @@ To support promotional incentives (discount codes, loyalty points) when creating
 * [.NET 8 SDK](https://dotnet.microsoft.com/download)
 * [Docker & Docker Compose](https://www.docker.com)
 
-### Getting Started
+### Local Setup
 
 ```bash
 # Clone repository
 git clone https://github.com/your-org/BackendSolution.git
 cd BackendSolution
-
-# Copy and configure environment variables
+# Configure environment variables
 cp docker/.env.example docker/.env
-
-# Build and run all services
+# Build & run
 docker-compose up --build
 ```
 
 ### Running Tests
 
 ```bash
-# From solution root
-dotnet test tests/OrderServiceTests
-dotnet test tests/InventoryServiceTests
-dotnet test tests/IdentityServiceTests
+cd src/Services/OrderService
+
+dotnet test OrderService.Tests
+
+cd ../ProductInventoryService
+
+dotnet test ProductInventoryService.Tests
+
+cd ../IdentityService
+
+dotnet test IdentityService.Tests
 ```
 
+---
+
+## 🛠 Environment Variables
+
+Configure `.env` per service:
+
+```dotenv
+# DB
+DATABASE__CONNECTIONSTRING=Server=...;Database=...;User=...;Password=...
+# OrderService
+dotnet_order__grpc__port=5001
+# InventoryService
+dotnet_inventory__grpc__port=5002
+# IdentityService
+identity__jwt__key=YourSuperSecretKey
+identity__jwt__issuer=YourIssuer
+```
 
 ---
 
