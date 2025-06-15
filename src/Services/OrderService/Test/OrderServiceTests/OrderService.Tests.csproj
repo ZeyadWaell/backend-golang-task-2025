@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- xUnit framework -->
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <!-- xUnit runner for Visual Studio & dotnet test -->
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
+    <!-- Test SDK (required for discovery) -->
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
+    <!-- Moq for mocking -->
+    <PackageReference Include="Moq" Version="4.18.2" />
+    <!-- AutoMapper if you need it in tests -->
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Services\OrderService\EasyOrder.Application.Contracts\EasyOrder.Application.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>
