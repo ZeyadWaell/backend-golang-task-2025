@@ -6,6 +6,13 @@ package inventory;
 
 service InventoryChecker {
   rpc CheckAvailability (InventoryRequest) returns (InventoryResponse);
+  rpc ReserveInventory  (QuantityRequest) returns (InventoryResponse); 
+  rpc ReleaseInventory  (QuantityRequest) returns (InventoryResponse);
+}
+
+message QuantityRequest {
+  int32 productItemId = 1;
+  int32 quantity      = 2;
 }
 
 message InventoryRequest {

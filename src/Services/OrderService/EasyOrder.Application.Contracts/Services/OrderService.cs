@@ -64,34 +64,37 @@ namespace EasyOrder.Application.Queries.Services
 
             foreach (var item in dto.Items)
             {
-                var isAvailable = await _inventoryChecker.CheckAvailabilityAsync(
-                    item.ProductItemId);
-
+                var isAvailable = await _inventoryChecker.CheckAvailabilityAsync(item.ProductItemId);
                 if (!isAvailable)
-                    return ErrorResponse.BadRequest(
-                        $"ProductItem {item.ProductItemId} is out of stock");
+                    return ErrorResponse.BadRequest($"ProductItem {item.ProductItemId} is out of stock");
             }
 
-            var checkedItems = await _inventoryChecker.CheckAvailabilityAsync(dto.Items.Select(x=>x.ProductItemId).FirstOrDefault());
+            var reservedItems = new List<(int ProductItemId, int Qty)>();
+            foreach (var item in dto.Items)
+            {
+                var reserved = await _inventoryChecker.ReserveAsync(item.ProductItemId, item.Quantity);
+                if (!reserved)
+                {
+                    foreach (var (pid, qty) in reservedItems)
+                        await _inventoryChecker.IncrementAsync(pid, qty);
+
+                    return ErrorResponse.BadRequest($"Failed to reserve inventory for ProductItem {item.ProductItemId}");
+                }
+                reservedItems.Add((item.ProductItemId, item.Quantity));
+            }
 
             var order = _mapper.Map<Order>(dto);
-
             await _unitOfWork.OrdersRepository.AddAsync(order);
-            var saved = await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
 
-            var resultDto = _mapper.Map<OrderDetailsDto>(order);
-
-            await _bus.Publish(new SagaMessages.OrderCreated(
-                order.Id, dto.Items[0].ProductItemId,
-                dto.Items[0].Quantity, order.TotalAmount, dto.Currency));
-
-
+           // var resultDto = _mapper.Map<OrderDetailsDto>(order);
             return new SuccessResponse<object>(
-                message: "Order created successfully",
-                data: resultDto,
-                 200
+                "Order created successfully",
+                order.Id,
+                200
             );
         }
+
 
         public async Task<BaseApiResponse> CancelOrderAsync(int id)
         {

@@ -32,4 +32,29 @@ public class InventoryCheckerService : InventoryChecker.InventoryCheckerBase
             Message = available ? "In stock" : "Out of stock"
         };
     }
+    public override async Task<InventoryResponse> ReleaseInventory(QuantityRequest request, ServerCallContext context)
+    {
+        var productItemCheck = await _unitOfWork.ProductItemRepository.AnyAsync(x => x.Id == request.ProductItemId);
+        if (!productItemCheck)
+            throw new RpcException(new Status(StatusCode.NotFound, $"Product item with ID {request.ProductItemId} not found"));
+        var reserved = await _unitOfWork.InventoryRepository.TryReserveAsync(request.ProductItemId, request.Quantity);
+        return new InventoryResponse
+        {
+            IsAvailable = reserved,
+            Message = reserved ? "Reservation successful" : "Insufficient stock for reservation"
+        };
+    }
+    public override async Task<InventoryResponse> ReserveInventory(QuantityRequest request, ServerCallContext context)
+    {
+        var productItemCheck = await _unitOfWork.ProductItemRepository.AnyAsync(x => x.Id == request.ProductItemId);
+        if (!productItemCheck)
+            throw new RpcException(new Status(StatusCode.NotFound, $"Product item with ID {request.ProductItemId} not found"));
+
+        await _unitOfWork.InventoryRepository.IncrementAsync(request.ProductItemId, request.Quantity);
+        return new InventoryResponse
+        {
+            IsAvailable = true,
+            Message = "Inventory incremented successfully"
+        };
+    }
 }
