@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EasyOrderProduct.Application.Contract.DTOs.Responses;
 using EasyOrderProduct.Application.Contract.Interfaces.Services;
 using EasyOrderProduct.Application.Contracts.DTOs.Responses;
 using EasyOrderProduct.Application.Contracts.DTOs.Responses.Global;
@@ -45,19 +46,19 @@ namespace EasyOrderProduct.Application.Contracts.Services
         }
         public async Task<BaseApiResponse> GetByIdAsync(int id)
         {
-            var product = await _unitOfWork.ProductRepository.GetAsync(p => p.Id == id);
+            var product = await _unitOfWork.ProductRepository.GetIncludingAsync(p => p.Id == id,x=>x.Variations,x=>x.ProductItems);
 
             if (product == null)
                 return ErrorResponse.NotFound("Product was not found");
 
-            var mapping =  _mapper.Map<ProductResponseDto>(product);
+            var mapping =  _mapper.Map<ProductDetailsResponseDto>(product);
 
             return new SuccessResponse<object>("Product found", mapping, 200);
         }
 
         public async Task<BaseApiResponse> GetAllAsync(PaginationFilter filter)
         {
-            var products = await _unitOfWork.ProductRepository.GetAllIncludingPaginatedAsync(x => x.CreatedBy == _currentUserService.UserId.ToString(),filter, CancellationToken.None,x=>x.ProductItems,x=>x.Variations);
+            var products = await _unitOfWork.ProductRepository.GetAllPaginatedAsync(x => x.CreatedBy == _currentUserService.UserId, filter);
 
             var mapping = _mapper.Map<IList<ProductResponseDto>>(products);
 
@@ -92,7 +93,7 @@ namespace EasyOrderProduct.Application.Contracts.Services
 
             if (!dto.Id.HasValue)
                 await _unitOfWork.ProductRepository.AddAsync(product);
-
+            _unitOfWork.ProductRepository.Update(product);
             await _unitOfWork.SaveChangesAsync();
 
             return new SuccessResponse<int>(

@@ -29,6 +29,32 @@ namespace EasyOrderProduct.Infrastructure.Persistence.Context
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<ProductItem>().ToTable("ProductItem", tb =>
+            {
+                tb.HasTrigger("trg_SyncProductItem");
+                tb.UseSqlOutputClause(false);
+            });
+
+            builder.Entity<Variation>().ToTable("Variation", tb =>
+            {
+                tb.HasTrigger("trg_SyncVariation");
+                tb.UseSqlOutputClause(false);
+            });
+
+
+            builder.Entity<Inventory>().ToTable("inventories", tb =>
+            {
+                tb.HasTrigger("trg_SyncInventory");
+                tb.UseSqlOutputClause(false);
+            });
+
+            // OrderItems
+            builder.Entity<Product>().ToTable("Product", tb =>
+            {
+                tb.HasTrigger("trg_SyncProduct");
+                tb.UseSqlOutputClause(false);
+            });
+
 
             builder.Entity<ProductItemOption>()
     .HasOne(pio => pio.VariationOption)

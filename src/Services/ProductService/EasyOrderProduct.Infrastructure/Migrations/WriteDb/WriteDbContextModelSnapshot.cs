@@ -60,6 +60,12 @@ namespace EasyOrderProduct.Infrastructure.Migrations.WriteDb
                     b.Property<int>("QuantityOnHand")
                         .HasColumnType("int");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<string>("WarehouseLocation")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -70,7 +76,7 @@ namespace EasyOrderProduct.Infrastructure.Migrations.WriteDb
                     b.HasIndex("ProductItemId")
                         .IsUnique();
 
-                    b.ToTable("Inventory");
+                    b.ToTable("inventories");
                 });
 
             modelBuilder.Entity("EasyOrderProduct.Domain.Entities.Product", b =>

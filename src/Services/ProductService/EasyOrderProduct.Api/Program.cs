@@ -1,6 +1,7 @@
 using EasyOrderProduct.Api.Middelware;
 using EasyOrderProduct.Application.Command.Handlers;
 using EasyOrderProduct.Application.Contract.Interfaces.GrpsServices;
+using EasyOrderProduct.Application.Contracts.Mapping;
 using EasyOrderProduct.Application.Queries.Handlers;
 using EasyOrderProduct.Infrastructure.Extentions;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -15,7 +16,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services
     .AddHttpContextAccessor()
-    .AddAutoMapper(typeof(Program).Assembly)
+    .AddAutoMapper(typeof(ProductProfile).Assembly)
     .AddInfrastructureServices(builder.Configuration)
     .AddJwtAuthentication(builder.Configuration)
     .AddSwaggerWithJwt()
