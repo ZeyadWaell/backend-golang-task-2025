@@ -52,6 +52,8 @@ namespace EasyOrder.Application.Queries.Mappings
             CreateMap<Order, OrderStatusDto>()
     .ForMember(d => d.orderStatus, opt => opt.MapFrom(src => src.Status));
 
+            CreateMap<Order, OrderListDto>();
+
             // (Optional) If you still need the reverse:
             CreateMap<OrderStatusDto, Order>();
 

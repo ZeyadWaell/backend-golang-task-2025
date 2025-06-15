@@ -39,9 +39,16 @@ namespace EasyOrder.Application.Queries.Services
 
         public async Task<BaseApiResponse> GetAllOrderAsync(PaginationFilter paginationFilter)
         {
-            var pagedProperties = await _unitOfWork.OrdersRepository.GetAllPaginatedAsync(x => x.CreatedBy == _currentUserService.UserId, paginationFilter);
+            var pagedOrders = await _unitOfWork.OrdersRepository.GetAllPaginatedAsync(x => x.CreatedBy == _currentUserService.UserId,paginationFilter);
 
-            return new SuccessResponse<object>("Got All Orders", pagedProperties, 200);
+            var dtoItems = pagedOrders.Items.Select(o => _mapper.Map<OrderListDto>(o)).ToList();
+
+            var resultPage = new PagedList<OrderListDto>(dtoItems,pagedOrders.TotalCount,paginationFilter.PageNumber,paginationFilter.PageSize);
+
+            return new SuccessResponse<object>(
+                "Got all orders",
+                resultPage,
+                200);
         }
         public async Task<BaseApiResponse> GetOrderByIdAsync(int id)
         {
@@ -65,7 +72,6 @@ namespace EasyOrder.Application.Queries.Services
 
             if (dto.Items.Any(i => i.Quantity <= 0))
                 return ErrorResponse.BadRequest("Each item quantity must be at least 1");
-
 
             var reservedItems = new List<(int ProductItemId, int Qty)>();
             foreach (var item in dto.Items)
