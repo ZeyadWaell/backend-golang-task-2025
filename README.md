@@ -76,6 +76,9 @@ BackendSolution
 
 ## 📖 Domain Entities & Class Diagram
 
+Email : admin@example.com
+Password : Admin123!
+
 We define core models with soft-delete, concurrency controls, and relationships.
 
 ```mermaid
