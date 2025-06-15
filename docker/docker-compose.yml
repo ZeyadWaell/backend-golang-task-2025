@@ -1,0 +1,66 @@
+version: "3.8"
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqldb
+    environment:
+      SA_PASSWORD: "Your_strong_P@ssw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql-data:/var/opt/mssql
+    healthcheck:
+      test: >
+        /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "Your_strong_P@ssw0rd" -Q "SELECT 1"
+      interval: 10s
+      retries: 5
+
+  order-service:
+    build:
+      context: ..
+      dockerfile: src/Services/OrderService/EasyOrder.Api/Dockerfile
+    image: easyorder/order-service:latest
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__WriteDatabaseOrder:  "Server=sqlserver;Database=OrderWriteDb;User Id=sa;Password=Your_strong_P@ssw0rd;"
+      ConnectionStrings__ReadDatabaseOrder:   "Server=sqlserver;Database=OrderReadDb;User Id=sa;Password=Your_strong_P@ssw0rd;"
+      ConnectionStrings__HangfireConnection:  "Server=sqlserver;Database=HangfireDb;User Id=sa;Password=Your_strong_P@ssw0rd;"
+      ASPNETCORE_ENVIRONMENT:                 "Production"
+    ports:
+      - "5001:80"
+
+  product-service:
+    build:
+      context: ..
+      dockerfile: src/Services/ProductService/EasyOrderProduct.Api/Dockerfile
+    image: easyorder/product-service:latest
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__WriteDatabase:       "Server=sqlserver;Database=EasyOrder_WriteDb;User Id=sa;Password=Your_strong_P@ssw0rd;"
+      ConnectionStrings__ReadDatabase:        "Server=sqlserver;Database=EasyOrder_ReadDb;User Id=sa;Password=Your_strong_P@ssw0rd;"
+      ASPNETCORE_ENVIRONMENT:                 "Production"
+    ports:
+      - "5002:80"
+
+  identity-service:
+    build:
+      context: ..
+      dockerfile: src/Services/UserService/EasyOrderIdentity.Api/Dockerfile
+    image: easyorder/identity-service:latest
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__IdentityDataBaseConnection: "Server=sqlserver;Database=EasyOrderIdentityDb;User Id=sa;Password=Your_strong_P@ssw0rd;"
+      ASPNETCORE_ENVIRONMENT:                         "Production"
+    ports:
+      - "5003:80"
+
+volumes:
+  sql-data:
