@@ -11,17 +11,18 @@ jobs:
     services:
       docker:
         image: docker:24.0.6-dind
-        # enable privileged mode for DinD
-        privileged: true
+        options:
+          - --privileged
         ports:
-          - 2375:2375   # expose daemon on localhost:2375
+          # expose the Docker daemon on localhost:2375
+          - 2375:2375
 
     env:
-      # tell the Docker CLI to hit our DinD service
+      # point Docker CLI at our DinD service
       DOCKER_HOST: tcp://localhost:2375
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up QEMU
@@ -34,7 +35,7 @@ jobs:
         working-directory: ./docker
         run: docker-compose up --build -d
 
-      - name: Wait for SQL Server
+      - name: Wait for SQL Server to be ready
         run: |
           for i in {1..15}; do
             docker run --rm mcr.microsoft.com/mssql-tools \
