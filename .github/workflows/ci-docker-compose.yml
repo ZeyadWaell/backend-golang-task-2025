@@ -1,62 +1,118 @@
-name: Docker Compose CI
+name: .NET CI + Docker
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    services:
-      # Docker-in-Docker so we can run docker commands
-      docker:
-        image: docker:24.0.6-dind
-        options: >-
-          --privileged
-          --network host
-        ports:
-          - 2375:2375
+    outputs:
+      order-image:       ${{ steps.order-build.outputs.image }}
+      product-image:     ${{ steps.product-build.outputs.image }}
+      identity-image:    ${{ steps.identity-build.outputs.image }}
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+      - name: Setup .NET 8 SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
 
+      - name: Restore solution
+        run: dotnet restore BackendMicroservices.sln
+
+      - name: Build solution
+        run: dotnet build BackendMicroservices.sln --no-restore --configuration Release
+
+      - name: Run OrderServiceTests
+        run: |
+          dotnet test \
+            src/OrderServiceTests/OrderServiceTests.csproj \
+            --no-build \
+            --verbosity detailed \
+            --logger "trx;LogFileName=order-tests.trx" \
+            /p:CollectCoverage=true \
+            /p:CoverletOutputFormat=opencover \
+            /p:CoverletOutput=TestResults/
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: OrderServiceTests-results
+          path: src/OrderServiceTests/TestResults/
+
+      # Build & push Docker images only on branch pushes, not PRs
       - name: Set up Docker Buildx
+        if: github.event_name != 'pull_request'
         uses: docker/setup-buildx-action@v3
 
-      - name: Build & start services
-        working-directory: ./docker
-        run: |
-          docker-compose up --build -d
+      - name: Log in to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Wait for SQL Server to be ready
-        run: |
-          for i in $(seq 1 15); do
-            docker run --network host --rm mcr.microsoft.com/mssql-tools \
-              /opt/mssql-tools/bin/sqlcmd -S 127.0.0.1,1433 -U sa -P "Your_strong_P@ssw0rd" -Q "SELECT 1" \
-              && break || sleep 5
-          done
+      - name: Build & push OrderService image
+        id: order-build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v4
+        with:
+          context: ./src/Services/OrderService/EasyOrder.Api
+          file:    ./src/Services/OrderService/EasyOrder.Api/Dockerfile
+          push:    true
+          tags:    ghcr.io/${{ github.repository }}/order-service:latest
+        outputs:
+          image: ghcr.io/${{ github.repository }}/order-service:latest
 
-      - name: Smoke test — hit OrderService health endpoint
-        run: |
-          curl --retry 5 --retry-connrefused --retry-delay 5 \
-            http://localhost:5001/health || exit 1
+      - name: Build & push ProductService image
+        id: product-build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v4
+        with:
+          context: ./src/Services/ProductService/EasyOrderProduct.Api
+          file:    ./src/Services/ProductService/EasyOrderProduct.Api/Dockerfile
+          push:    true
+          tags:    ghcr.io/${{ github.repository }}/product-service:latest
+        outputs:
+          image: ghcr.io/${{ github.repository }}/product-service:latest
 
-      - name: Smoke test — hit ProductService health endpoint
-        run: |
-          curl --retry 5 --retry-connrefused --retry-delay 5 \
-            http://localhost:5002/health || exit 1
+      - name: Build & push IdentityService image
+        id: identity-build
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v4
+        with:
+          context: ./src/Services/UserService/EasyOrderIdentity.Api
+          file:    ./src/Services/UserService/EasyOrderIdentity.Api/Dockerfile
+          push:    true
+          tags:    ghcr.io/${{ github.repository }}/identity-service:latest
+        outputs:
+          image: ghcr.io/${{ github.repository }}/identity-service:latest
 
-      - name: Smoke test — hit IdentityService health endpoint
-        run: |
-          curl --retry 5 --retry-connrefused --retry-delay 5 \
-            http://localhost:5003/health || exit 1
+  smoke-test:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: Wait for services
+        run: sleep 20   # give containers a moment to start
 
-      - name: Tear down
-        working-directory: ./docker
-        run: |
-          docker-compose down -v
+      - name: Smoke test OrderService
+        run: curl --fail http://localhost:5001/health
 
+      - name: Smoke test ProductService
+        run: curl --fail http://localhost:5002/health
+
+      - name: Smoke test IdentityService
+        run: curl --fail http://localhost:5003/health
