@@ -209,7 +209,7 @@ Controllers remain minimal, handling only routing, rate limiting, and response s
 
 A custom interceptor enforces:
 
-* **Permission Checks**: Validates user roles per entity before modifications.
+* **Permission Checks**: Validates of same user or same team before saving and converint linq to sql syntax
 * **Audit Logging**: Populates `CreatedOn`, `ModifiedOn`, `CreatedBy`, `ModifiedBy`.
 
 ```csharp
