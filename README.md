@@ -131,7 +131,7 @@ To support promotional incentives (discount codes, loyalty points) when creating
 | ------------------------------- | --------------------------------- |
 | OrderService → InventoryService | Reserve/Release stock             |
 | InventoryService → OrderService | Confirm availability              |
-| OrderService → IdentityService  | Verify user roles and permissions |
+| ------------------------------- | --------------------------------- |
 
 ---
 
