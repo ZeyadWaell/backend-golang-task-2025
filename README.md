@@ -157,21 +157,22 @@ All entities inherit from `BaseSoftIntDelete` or `BaseSoftDelete` (timestamps, a
 
 * **MediatR** is used to decouple request handlers from controllers.
 * Controllers act as thin adapters: they map HTTP/gRPC requests to commands or queries and pass them to `_mediator.Send(...)`.
-* Example in a controller:
+* Example in a controller using CQRS, Rate Limiting, and Mediator:
 
   ```csharp
-      [HttpPost(OrderRoutes.Create)]
-      [EnableRateLimiting("FixedPolicy")]      // Rate Limit for Creating Order Process
-
-      public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto dto)
-      {
-          var query = new CreateOrderCommand(dto);
-          var response = await _mediator.Send(query);
-          return StatusCode(response.StatusCode, response);
-      }
+  [HttpPost(OrderRoutes.Create)]
+  [EnableRateLimiting("FixedPolicy")]
+  public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto dto)
+  {
+      var command = new CreateOrderCommand(dto);
+      var response = await _mediator.Send(command);
+      return StatusCode(response.StatusCode, response);
+  }
   ```
 
-### 🧱 Clean Architecture & Separation of Concerns
+Controllers remain minimal, handling only routing, rate limiting, and response statuses.
+
+### 🧱 Clean Architecture & Separation of Concerns & Separation of Concerns
 
 * **Controllers/Endpoints**: Handle only input validation/mapping and output formatting.
 * **Services/Handlers**: Contain all business logic in the service layer, not in controllers.
@@ -251,7 +252,6 @@ Default roles and users are seeded at application startup.
 | ----------------------------------- | ------------------------------ |
 | **OrderService → InventoryService** | Reserve or release stock       |
 | **InventoryService → OrderService** | Confirm availability           |
-| **OrderService → IdentityService**  | Verify user roles and policies |
 
 ---
 
