@@ -54,7 +54,6 @@ namespace EasyOrder.Api.Middelware
             }
             finally
             {
-                // Copy (possibly overwritten) buffer back to the real response
                 buffer.Seek(0, SeekOrigin.Begin);
                 await buffer.CopyToAsync(originalBody);
                 context.Response.Body = originalBody;
