@@ -153,13 +153,30 @@ All entities inherit from `BaseSoftIntDelete` or `BaseSoftDelete` (timestamps, a
 * **Query Side**: Reads served by optimized projections in `Application.Queries`.
 * **Atomic Transactions**: Commands wrap updates across aggregates and external gRPC calls.
 
-### 🧱 Clean Architecture
+### 🔄 Mediator Pattern
 
-* **Api**: Controllers, gRPC services, middleware, EF Core interceptors
-* **Application.Contracts**: DTOs, Interfaces, Protos
-* **Application.Commands/Queries**: Business logic and handlers
-* **Domain**: Entities, domain events, business rules
-* **Infrastructure**: EF Core DbContexts, repositories, external service implementations
+* **MediatR** is used to decouple request handlers from controllers.
+* Controllers act as thin adapters: they map HTTP/gRPC requests to commands or queries and pass them to `_mediator.Send(...)`.
+* Example in a controller:
+
+  ```csharp
+      [HttpPost(OrderRoutes.Create)]
+      [EnableRateLimiting("FixedPolicy")]      // Rate Limit for Creating Order Process
+
+      public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto dto)
+      {
+          var query = new CreateOrderCommand(dto);
+          var response = await _mediator.Send(query);
+          return StatusCode(response.StatusCode, response);
+      }
+  ```
+
+### 🧱 Clean Architecture & Separation of Concerns
+
+* **Controllers/Endpoints**: Handle only input validation/mapping and output formatting.
+* **Services/Handlers**: Contain all business logic in the service layer, not in controllers.
+* **Interfaces/Contracts**: Define clear boundaries between layers using dependency injection.
+* Ensures maintainability, testability, and clear ownership of responsibilities.
 
 ### 🛠 Structural Design Patterns
 
@@ -175,9 +192,19 @@ All entities inherit from `BaseSoftIntDelete` or `BaseSoftDelete` (timestamps, a
 
 * **Strategy Pattern**: Supports multiple payment methods by implementing `IPaymentStrategy` for each provider.
 
+### 🛑 Global Error Handling
+
+* **Custom Error Middleware** intercepts exceptions across the application.
+* Converts uncaught exceptions into standardized API responses (e.g., `ProblemDetails`).
+* Logs errors centrally and returns consistent error shapes:
+
+  ```csharp
+  app.UseMiddleware<ErrorHandlingMiddleware>();
+  ```
+
 ---
 
-## 🔄 EF Core Interceptors & SaveChanges Hook
+## 🔄 EF Core Interceptors & SaveChanges Hook & SaveChanges Hook
 
 A custom interceptor enforces:
 
@@ -224,6 +251,7 @@ Default roles and users are seeded at application startup.
 | ----------------------------------- | ------------------------------ |
 | **OrderService → InventoryService** | Reserve or release stock       |
 | **InventoryService → OrderService** | Confirm availability           |
+| **OrderService → IdentityService**  | Verify user roles and policies |
 
 ---
 
