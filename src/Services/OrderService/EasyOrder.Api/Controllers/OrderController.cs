@@ -7,6 +7,7 @@ using EasyOrder.Application.Contracts.Filters;
 using EasyOrder.Application.Command.Commands;
 using EasyOrder.Application.Queries.Queries.Order;
 using EasyOrder.Application.Command.Commands.Order;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace EasyOrder.Api.Controllers
 {
@@ -37,6 +38,8 @@ namespace EasyOrder.Api.Controllers
         }
 
         [HttpPost(OrderRoutes.Create)]
+        [EnableRateLimiting("FixedPolicy")]      
+
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto dto)
         {
             var query = new CreateOrderCommand(dto);

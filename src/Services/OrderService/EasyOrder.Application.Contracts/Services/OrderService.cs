@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EasyOrder.Application.Contracts.BackGroundService;
 using EasyOrder.Application.Contracts.DTOs;
 using EasyOrder.Application.Contracts.DTOs.Responses.Global;
 using EasyOrder.Application.Contracts.Filters;
@@ -10,6 +11,7 @@ using EasyOrder.Application.Contracts.Messaging;
 using EasyOrder.Domain.Entities;
 using EasyOrder.Domain.Enums;
 using EasyOrderProduct.Application.Contracts.Protos;
+using Hangfire;
 using MassTransit;
 using Ocelot.Infrastructure;
 
@@ -23,14 +25,16 @@ namespace EasyOrder.Application.Queries.Services
         private readonly IMapper _mapper;
         private readonly IInventoryChecker _inventoryChecker;
         private readonly IBus _bus;
+        private readonly IBackgroundJobClient _jobs;
 
-        public OrderService(IUnitOfWork unitOfWork, ICurrentUserService currentUserService, IMapper mapper, IInventoryChecker inventoryChecker = null, IBus bus = null)
+        public OrderService(IUnitOfWork unitOfWork, ICurrentUserService currentUserService, IMapper mapper, IInventoryChecker inventoryChecker = null, IBus bus = null, IBackgroundJobClient jobs = null)
         {
             _unitOfWork = unitOfWork;
             _currentUserService = currentUserService;
             _mapper = mapper;
             _inventoryChecker = inventoryChecker;
             _bus = bus;
+            _jobs = jobs;
         }
 
         public async Task<BaseApiResponse> GetAllOrderAsync(PaginationFilter paginationFilter)
@@ -62,12 +66,13 @@ namespace EasyOrder.Application.Queries.Services
             if (dto.Items.Any(i => i.Quantity <= 0))
                 return ErrorResponse.BadRequest("Each item quantity must be at least 1");
 
-            foreach (var item in dto.Items)
-            {
-                var isAvailable = await _inventoryChecker.CheckAvailabilityAsync(item.ProductItemId);
-                if (!isAvailable)
-                    return ErrorResponse.BadRequest($"ProductItem {item.ProductItemId} is out of stock");
-            }
+
+            //foreach (var item in dto.Items) old method 
+            //{
+            //    var isAvailable = await _inventoryChecker.CheckAvailabilityAsync(item.ProductItemId);
+            //    if (!isAvailable)
+            //        return ErrorResponse.BadRequest($"ProductItem {item.ProductItemId} is out of stock");
+            //}
 
             var reservedItems = new List<(int ProductItemId, int Qty)>();
             foreach (var item in dto.Items)
@@ -87,7 +92,8 @@ namespace EasyOrder.Application.Queries.Services
             await _unitOfWork.OrdersRepository.AddAsync(order);
             await _unitOfWork.SaveChangesAsync();
 
-           // var resultDto = _mapper.Map<OrderDetailsDto>(order);
+            _jobs.Enqueue<ChargePaymentJob>(job => job.ExecuteAsync(dto.Payment.Method, order.TotalAmount,order.Id));
+
             return new SuccessResponse<object>(
                 "Order created successfully",
                 order.Id,

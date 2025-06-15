@@ -15,6 +15,8 @@ using EasyOrder.Infrastructure.Sagas;
 using EasyOrder.Infrastructure.Services.Internal;
 using EasyOrderProduct.Application.Contracts.Protos;
 using Grpc.Net.Client;
+using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,7 +35,7 @@ namespace EasyOrder.Infrastructure.Extentions
             AddServices(services);
             AddDatabaseContext(services, configuration);
             AddRepositories(services);
-
+            AddHandFireString(services, configuration);
             return services;
         }
 
@@ -42,9 +44,9 @@ namespace EasyOrder.Infrastructure.Extentions
         private static void AddDatabaseContext(IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<ReadDbContext>(opts =>
-                opts.UseSqlServer(configuration.GetConnectionString("ReadDatabase")));
+                opts.UseSqlServer(configuration.GetConnectionString("ReadDatabaseOrder")));
             services.AddDbContext<WriteDbContext>(opts =>
-                opts.UseSqlServer(configuration.GetConnectionString("WriteDatabase")));
+                opts.UseSqlServer(configuration.GetConnectionString("WriteDatabaseOrder")));
         }
 
         private static void AddRepositories(IServiceCollection services)
@@ -53,23 +55,36 @@ namespace EasyOrder.Infrastructure.Extentions
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
-
-        private static void AddingMessaging(IServiceCollection services, IConfiguration configuration)
+        private static void AddHandFireString(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddRebus(busConfig => busConfig
-                .Transport(t => t.UseRabbitMq(configuration["RabbitMq"], "order-queue"))
-                .Routing(r => r.TypeBased()
-                    .Map<SagaMessages.ReserveInventory>("inventory-queue")
-                    .Map<SagaMessages.ChargePayment>("payment-queue")
-                    .Map<SagaMessages.ReleaseInventory>("inventory-queue"))
-                .Sagas(s => s.StoreInSqlServer(
-                    configuration.GetConnectionString("WriteDb"), // your DB conn
-                    dataTableName: "OrderSagas",                 // saga data table
-                    indexTableName: "OrderSagasIndex",            // saga index table
-                    automaticallyCreateTables: true))
-            );
-            services.AutoRegisterHandlersFromAssemblyOf<OrderSaga>();
+            services.AddHangfire(cfg => cfg.UseSimpleAssemblyNameTypeSerializer().UseRecommendedSerializerSettings().UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection"),new SqlServerStorageOptions
+    {
+        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+        QueuePollInterval = TimeSpan.FromSeconds(15),
+        UseRecommendedIsolationLevel = true,
+        DisableGlobalLocks = true
+    }
+)
+);
+            services.AddHangfireServer();
         }
+        //private static void AddingMessaging(IServiceCollection services, IConfiguration configuration)
+        //{
+        //    services.AddRebus(busConfig => busConfig
+        //        .Transport(t => t.UseRabbitMq(configuration["RabbitMq"], "order-queue"))
+        //        .Routing(r => r.TypeBased()
+        //            .Map<SagaMessages.ReserveInventory>("inventory-queue")
+        //            .Map<SagaMessages.ChargePayment>("payment-queue")
+        //            .Map<SagaMessages.ReleaseInventory>("inventory-queue"))
+        //        .Sagas(s => s.StoreInSqlServer(
+        //            configuration.GetConnectionString("WriteDb"), // your DB conn
+        //            dataTableName: "OrderSagas",                 // saga data table
+        //            indexTableName: "OrderSagasIndex",            // saga index table
+        //            automaticallyCreateTables: true))
+        //    );
+        //    services.AutoRegisterHandlersFromAssemblyOf<OrderSaga>();
+        //}
         private static void AddGrpcClients(IServiceCollection services, IConfiguration configuration)
         {
             var inventoryUrl = configuration["GrpcSettings:InventoryUrl"];
@@ -87,7 +102,7 @@ namespace EasyOrder.Infrastructure.Extentions
         private static void AddServices(IServiceCollection services) 
         {
             services.AddScoped<IAdminService, AdminService>();
-            services.AddScoped<IImageService, ImageService>();
+         //   services.AddScoped<IImageService, ImageService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IOrderService, OrderService>();
         }
