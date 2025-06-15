@@ -187,7 +187,6 @@ Controllers remain minimal, handling only routing, rate limiting, and response s
 * **Factory Pattern**: Dynamically constructs instances (e.g., repository factories).
 * **Adapter Pattern**: Wraps external SDKs (e.g., payment gateways) into internal interfaces (`IPaymentClient`).
 * **Outbox Pattern**: Persists domain events in an outbox table for reliable asynchronous dispatch.
-* **Singleton Pattern**: Shared application settings (`IOptions<T>`) and single-instance services.
 
 ### 💳 Behavioral Design Patterns
 
