@@ -47,25 +47,23 @@ builder.WebHost.ConfigureKestrel(opts =>
 {
     opts.ListenLocalhost(7003, lo =>
     {
-        lo.Protocols = HttpProtocols.Http2;
+        lo.Protocols = HttpProtocols.Http1AndHttp2;
         lo.UseHttps();
     });
 });
 
-builder.Services.AddGrpc(o =>
-{
-    o.EnableDetailedErrors = true;
-});
-
 var app = builder.Build();
-
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
+// 1) expose swagger.json
+app.UseSwagger();
+
+// 2) expose swagger UI
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "EasyOrder API v1");
-    c.RoutePrefix = "swagger";   
+    c.RoutePrefix = "swagger";
 });
 
 app.UseHttpsRedirection();
@@ -74,6 +72,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapGrpcService<InventoryCheckerService>();
-app.MapGet("/", () => "Inventory gRPC at https://localhost:7003"); app.UseSwagger();
+app.MapGet("/", () => "Inventory gRPC at https://localhost:7003");
 
 app.Run();
