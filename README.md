@@ -76,8 +76,6 @@ BackendSolution
 
 ## 📖 Domain Entities & Class Diagram
 
-Email : admin@example.com
-Password : Admin123!
 
 We define core models with soft-delete, concurrency controls, and relationships.
 
@@ -243,6 +241,9 @@ To apply promotions and loyalty incentives:
 ---
 
 ## 👥 Data Seeding
+
+Email : admin@example.com
+Password : Admin123!
 
 Default roles and users are seeded at application startup.
 
