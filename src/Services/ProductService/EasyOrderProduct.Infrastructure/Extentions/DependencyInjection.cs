@@ -1,24 +1,18 @@
 ﻿using EasyOrder.Infrastructure.Persistence.Repositories.Main;
-using EasyOrderProduct.Application.Contract.Interfaces.GrpsServices;
 using EasyOrderProduct.Application.Contract.Interfaces.Repository;
 using EasyOrderProduct.Application.Contract.Interfaces.Services;
-using EasyOrderProduct.Application.Contract.Messaging;
 using EasyOrderProduct.Application.Contract.Services;
 using EasyOrderProduct.Application.Contracts.Interfaces.InternalServices;
 using EasyOrderProduct.Application.Contracts.Interfaces.Main;
-using EasyOrderProduct.Application.Contracts.Protos;
-using EasyOrderProduct.Application.Contracts.Services;
-using EasyOrderProduct.Infrastructure.Messaging.Handlers;
 using EasyOrderProduct.Infrastructure.Persistence.Context;
 using EasyOrderProduct.Infrastructure.Persistence.Repositories;
 using EasyOrderProduct.Infrastructure.Persistence.Repositories.Main;
 using EasyOrderProduct.Infrastructure.Services.Internal;
-using Grpc.Net.Client;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Rebus.Config;
-using Rebus.Routing.TypeBased;
 
 
 namespace EasyOrderProduct.Infrastructure.Extentions;
@@ -27,6 +21,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
+        AddMemoryCache(services);
         AddServices(services);
         AddDatabaseContext(services, configuration);
         AddRepositories(services);
@@ -63,6 +58,10 @@ public static class DependencyInjection
     //    services.AutoRegisterHandlersFromAssemblyOf<ReserveInventoryHandler>();
     //}
 
+    private static void AddMemoryCache(IServiceCollection services)
+    {
+        services.AddMemoryCache();
+    }
     private static void AddRepositories(IServiceCollection services)
     {
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

@@ -25,7 +25,7 @@ namespace EasyOrderProduct.Api.Controllers
 
         [HttpPost]
         [Route(ProductRoutes.Create)]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+    //    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> CreateProduct(UpsertProductDto request)
         {
             var product = new CreateProductCommand(request);
