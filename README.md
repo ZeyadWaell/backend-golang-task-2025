@@ -224,7 +224,6 @@ Default roles and users are seeded at application startup.
 | ----------------------------------- | ------------------------------ |
 | **OrderService → InventoryService** | Reserve or release stock       |
 | **InventoryService → OrderService** | Confirm availability           |
-| **OrderService → IdentityService**  | Verify user roles and policies |
 
 ---
 
