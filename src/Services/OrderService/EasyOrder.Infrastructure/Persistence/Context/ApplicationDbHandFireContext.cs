@@ -11,15 +11,11 @@ namespace EasyOrder.Infrastructure.Persistence.Context
 {
     public class ApplicationDbHandFireContext : DbContext
     {
-        private readonly IConfiguration _configuration;
-
-        public ApplicationDbHandFireContext(DbContextOptions<ApplicationDbHandFireContext> options, IConfiguration configuration)
+        public ApplicationDbHandFireContext(DbContextOptions<ApplicationDbHandFireContext> options)
             : base(options)
         {
-            _configuration = configuration;
         }
 
-      //  public DbSet<JobLog> JobLog { get; set; }
 
     }
 }

@@ -30,7 +30,7 @@ public static class DependencyInjection
         AddServices(services);
         AddDatabaseContext(services, configuration);
         AddRepositories(services);
-        AddingMessaging(services, configuration); // Ensure this method is called
+   //     AddingMessaging(services, configuration); // Ensure this method is called
 
         return services;
     }
@@ -45,23 +45,23 @@ public static class DependencyInjection
             opts.UseSqlServer(configuration.GetConnectionString("WriteDatabase")));
     }
 
-    private static void AddingMessaging(IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddRebus(cfg => cfg
-                   .Transport(t => t.UseRabbitMq(
-                       configuration["RabbitMq:ConnectionString"], "inventory-queue"))
-                   .Routing(r => r.TypeBased()
-                       .Map<ReserveInventory>("inventory-queue")
-                       .Map<ReleaseInventory>("inventory-queue"))
-                   .Sagas(s => s.StoreInSqlServer(
-            configuration.GetConnectionString("WriteDb"), // your DB conn
-            dataTableName: "OrderSagas",                 // saga data table
-            indexTableName: "OrderSagasIndex",            // saga index table
-            automaticallyCreateTables: true))
-    );
+    //private static void AddingMessaging(IServiceCollection services, IConfiguration configuration)
+    //{
+    //    services.AddRebus(cfg => cfg
+    //               .Transport(t => t.UseRabbitMq(
+    //                   configuration["RabbitMq:ConnectionString"], "inventory-queue"))
+    //               .Routing(r => r.TypeBased()
+    //                   .Map<ReserveInventory>("inventory-queue")
+    //                   .Map<ReleaseInventory>("inventory-queue"))
+    //               .Sagas(s => s.StoreInSqlServer(
+    //        configuration.GetConnectionString("WriteDb"), // your DB conn
+    //        dataTableName: "OrderSagas",                 // saga data table
+    //        indexTableName: "OrderSagasIndex",            // saga index table
+    //        automaticallyCreateTables: true))
+    //);
 
-        services.AutoRegisterHandlersFromAssemblyOf<ReserveInventoryHandler>();
-    }
+    //    services.AutoRegisterHandlersFromAssemblyOf<ReserveInventoryHandler>();
+    //}
 
     private static void AddRepositories(IServiceCollection services)
     {

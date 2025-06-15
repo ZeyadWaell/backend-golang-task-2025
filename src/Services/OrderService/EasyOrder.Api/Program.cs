@@ -4,6 +4,7 @@ using EasyOrder.Application.Command.Handlers.Admin;
 using EasyOrder.Application.Command.Handlers.Order;
 using EasyOrder.Application.Queries.Handlers.Admin;
 using EasyOrder.Application.Queries.Handlers.Order;
+using EasyOrder.Application.Queries.Mappings;
 using EasyOrder.Infrastructure.ActionFilter;
 using EasyOrder.Infrastructure.Extentions;
 using Hangfire;
@@ -16,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddHttpContextAccessor()
-    .AddAutoMapper(typeof(Program).Assembly)
+    .AddAutoMapper(typeof(OrderMappingProfile).Assembly)
     .AddInfrastructureServices(builder.Configuration)
     .AddJwtAuthentication(builder.Configuration)
     .AddSwaggerWithJwt()

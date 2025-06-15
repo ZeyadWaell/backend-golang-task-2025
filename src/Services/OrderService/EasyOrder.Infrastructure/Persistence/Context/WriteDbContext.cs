@@ -1,6 +1,7 @@
 ﻿using EasyOrder.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,28 @@ namespace EasyOrder.Infrastructure.Persistence.Context
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+
+            builder.Entity<Order>().ToTable("Orders", tb =>
+            {
+                tb.HasTrigger("trg_SyncOrders");
+                tb.UseSqlOutputClause(false);
+            });
+
+            // OrderItems
+            builder.Entity<OrderItem>().ToTable("OrderItems", tb =>
+            {
+                tb.HasTrigger("trg_SyncOrderItems");
+                tb.UseSqlOutputClause(false);
+            });
+
+            // Payments
+            builder.Entity<Payment>().ToTable("Payments", tb =>
+            {
+                tb.HasTrigger("trg_SyncPayments");
+                tb.UseSqlOutputClause(false);
+            });
+
             // e.g. builder.ApplyConfiguration(new OrderConfiguration());
         }
     }

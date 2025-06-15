@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,6 +30,14 @@ namespace EasyOrder.Infrastructure.Persistence.Context
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+    //        builder.Entity<Order>()
+    //.ToTable(tb => tb.HasTrigger("trg_SyncOrders"));
+    //        builder.Entity<OrderItem>()
+    //            .ToTable(tb => tb.HasTrigger("trg_SyncOrderItems"));
+    //        builder.Entity<Payment>()
+    //            .ToTable(tb => tb.HasTrigger("trg_SyncPayments"));
+
             // configure your projections:
             // builder.Entity<OrderReadModel>().HasKey(x => x.Id);
         }

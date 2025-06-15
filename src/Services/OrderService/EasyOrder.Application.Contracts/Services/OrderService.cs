@@ -67,13 +67,6 @@ namespace EasyOrder.Application.Queries.Services
                 return ErrorResponse.BadRequest("Each item quantity must be at least 1");
 
 
-            //foreach (var item in dto.Items) old method 
-            //{
-            //    var isAvailable = await _inventoryChecker.CheckAvailabilityAsync(item.ProductItemId);
-            //    if (!isAvailable)
-            //        return ErrorResponse.BadRequest($"ProductItem {item.ProductItemId} is out of stock");
-            //}
-
             var reservedItems = new List<(int ProductItemId, int Qty)>();
             foreach (var item in dto.Items)
             {
@@ -92,7 +85,7 @@ namespace EasyOrder.Application.Queries.Services
             await _unitOfWork.OrdersRepository.AddAsync(order);
             await _unitOfWork.SaveChangesAsync();
 
-            _jobs.Enqueue<ChargePaymentJob>(job => job.ExecuteAsync(dto.Payment.Method, order.TotalAmount,order.Id));
+            _jobs.Enqueue<ChargePaymentJob>(job => job.ExecuteAsync(dto.Payment.Method, order.TotalAmount, order.Id));
 
             return new SuccessResponse<object>(
                 "Order created successfully",
@@ -104,12 +97,15 @@ namespace EasyOrder.Application.Queries.Services
 
         public async Task<BaseApiResponse> CancelOrderAsync(int id)
         {
-            var order = await _unitOfWork.OrdersRepository.GetAsync(x => x.Id == id && x.CreatedBy == _currentUserService.UserId);
+
+            var order = await _unitOfWork.OrdersRepository
+                .GetAsync(x => x.Id == id && x.CreatedBy == _currentUserService.UserId);
+
             if (order == null)
                 return ErrorResponse.NotFound("Order not found");
 
-            if (order.Status != OrderStatus.Pending)
-                return ErrorResponse.BadRequest("Only pending orders can be cancelled");
+            //if (order.Status != OrderStatus.Pending)
+            //    return ErrorResponse.BadRequest("Only pending orders can be cancelled");
 
             order.Status = OrderStatus.Cancelled;
             _unitOfWork.OrdersRepository.Update(order);
@@ -127,7 +123,7 @@ namespace EasyOrder.Application.Queries.Services
 
             var resultDto = _mapper.Map<OrderStatusDto>(order);
 
-            return new SuccessResponse<object>("Order status retrieved successfully", resultDto, 200);
+            return new SuccessResponse<object>("Order status retrieved successfully", resultDto.orderStatus.ToString(), 200);
         }
     }
 }
