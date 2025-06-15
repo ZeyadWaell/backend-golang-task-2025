@@ -2,7 +2,9 @@ name: Docker Compose CI
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+  workflow_dispatch:
 
 jobs:
   build-and-test:
@@ -14,28 +16,23 @@ jobs:
         options:
           - --privileged
         ports:
-          # expose the Docker daemon on localhost:2375
           - 2375:2375
 
     env:
-      # point Docker CLI at our DinD service
       DOCKER_HOST: tcp://localhost:2375
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-qemu-action@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v3
 
-      - name: Build & start all services
+      - name: Build & start services
         working-directory: ./docker
         run: docker-compose up --build -d
 
-      - name: Wait for SQL Server to be ready
+      - name: Wait for SQL Server
         run: |
           for i in {1..15}; do
             docker run --rm mcr.microsoft.com/mssql-tools \
@@ -45,16 +42,13 @@ jobs:
           done
 
       - name: Smoke test OrderService
-        run: |
-          curl --fail --retry 5 --retry-delay 5 http://localhost:5001/health
+        run: curl --fail --retry 5 --retry-delay 5 http://localhost:5001/health
 
       - name: Smoke test ProductService
-        run: |
-          curl --fail --retry 5 --retry-delay 5 http://localhost:5002/health
+        run: curl --fail --retry 5 --retry-delay 5 http://localhost:5002/health
 
       - name: Smoke test IdentityService
-        run: |
-          curl --fail --retry 5 --retry-delay 5 http://localhost:5003/health
+        run: curl --fail --retry 5 --retry-delay 5 http://localhost:5003/health
 
       - name: Tear down
         working-directory: ./docker
