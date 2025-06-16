@@ -137,7 +137,7 @@ public class ProductService : IProductService
     #region Cache eviction
 
     private string CacheKey(int page, int size)
-        => $"{_currentUserService.UserId}_Products_P{page}_S{size}";
+        => $"_Products_P{page}_S{size}";
 
     private void EvictPage(int page, int size)
     {
