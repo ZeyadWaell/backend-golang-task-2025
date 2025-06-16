@@ -48,16 +48,16 @@ BackendSolution
 │           ├── EasyOrderIdentity.Infrastructure
 │           └── IdentityService.Tests  # Unit & integration tests for IdentityService
 │
-├── Shared
-│   └── Common Auth, DTOs, Logging, Extensions
+├
+│   
 │
 ├── API Gateway
 │   └── Ocelot configuration (Swagger merge, routing, rate limiting)
 │
 ├── docker
-│   └── docker-compose.yml, Dockerfiles, .env
-│
-└── (tests moved into each service as shown above)
+    └── docker-compose.yml
+
+
 ```
 
 ---
