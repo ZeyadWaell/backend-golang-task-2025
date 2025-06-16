@@ -47,8 +47,9 @@ namespace EasyOrderProduct.Application.Contract.DTOs.Responses
 
         public class InventoryDto
         {
-            public int QuantityOnHand { get; set; }
-            public string WarehouseLocation { get; set; }
+        public int? ProductItemId { get; set; }
+        public int QuantityOnHand { get; set; }
+        public string WarehouseLocation { get; set; }
         }
     
 }

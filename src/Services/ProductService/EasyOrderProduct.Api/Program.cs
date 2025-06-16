@@ -1,5 +1,6 @@
 using EasyOrderProduct.Api.Middelware;
 using EasyOrderProduct.Application.Command.Handlers;
+using EasyOrderProduct.Application.Contract.Hubs;
 using EasyOrderProduct.Application.Contract.Interfaces.GrpsServices;
 using EasyOrderProduct.Application.Contracts.Mapping;
 using EasyOrderProduct.Application.Queries.Handlers;
@@ -71,6 +72,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<InventoryHub>("/hubs/inventory");
+
 app.MapGrpcService<InventoryCheckerService>();
 app.MapGet("/", () => "Inventory gRPC at https://localhost:7003");
 

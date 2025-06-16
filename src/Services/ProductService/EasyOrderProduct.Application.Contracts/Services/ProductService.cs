@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EasyOrderProduct.Application.Contract.DTOs.Responses;
+using EasyOrderProduct.Application.Contract.Hubs;
 using EasyOrderProduct.Application.Contract.Interfaces.Services;
 using EasyOrderProduct.Application.Contracts.DTOs.Responses;
 using EasyOrderProduct.Application.Contracts.DTOs.Responses.Global;
@@ -7,6 +8,7 @@ using EasyOrderProduct.Application.Contracts.Filters;
 using EasyOrderProduct.Application.Contracts.Interfaces.InternalServices;
 using EasyOrderProduct.Application.Contracts.Interfaces.Main;
 using EasyOrderProduct.Domain.Entities;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Memory;
 
 public class ProductService : IProductService
@@ -17,12 +19,13 @@ public class ProductService : IProductService
     private readonly IMemoryCache _cache;
     private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(10);
 
-    public ProductService(IUnitOfWork unitOfWork,IMapper mapper,ICurrentUserService currentUserService,IMemoryCache cache)
+    public ProductService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentUserService currentUserService, IMemoryCache cache)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _currentUserService = currentUserService;
         _cache = cache;
+
     }
 
     public async Task<BaseApiResponse> CreateProductAsync(UpsertProductDto dto)
@@ -39,8 +42,9 @@ public class ProductService : IProductService
 
         await _unitOfWork.ProductRepository.AddAsync(product);
         await _unitOfWork.SaveChangesAsync();
-
         EvictPage(1, 10);
+
+
 
         return new SuccessResponse<object>(
              message: $"Product '{product.Name}' (ID={product.Id}) created successfully.",
@@ -147,9 +151,9 @@ public class ProductService : IProductService
     private async Task EvictPageContainingProductAsync(int productId)
     {
         var product = await _unitOfWork.ProductRepository.GetAsync(p => p.Id == productId);
-        var beforeCount = await _unitOfWork.ProductRepository.CountAsync(p =>p.CreatedBy == _currentUserService.UserId &&p.CreatedOn > product.CreatedOn);
+        var beforeCount = await _unitOfWork.ProductRepository.CountAsync(p => p.CreatedBy == _currentUserService.UserId && p.CreatedOn > product.CreatedOn);
 
-        int pageSize = 10; 
+        int pageSize = 10;
         int pageNumber = (beforeCount / pageSize) + 1;
 
         EvictPage(pageNumber, pageSize);
