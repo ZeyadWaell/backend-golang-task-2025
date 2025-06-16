@@ -344,7 +344,7 @@ To provide real-time feedback to clients, the system broadcasts order and invent
 
 ## ⚡️ Response Caching
 
-In `ProductService`, we leverage **IMemoryCache** to store paginated product listings (keyed by page number and page size) for **10 minutes**. AutoMapper maps domain entities to response DTOs before caching.
+In `ProductService`, we leverage **IMemoryCache** to store paginated product listings (keyed by page number and page size) for **x minutes**. AutoMapper maps domain entities to response DTOs before caching.
 
 
 ## 🧹 Cache Invalidation
