@@ -13,6 +13,7 @@ using EasyOrder.Domain.Enums;
 using EasyOrderProduct.Application.Contracts.Protos;
 using Hangfire;
 using MassTransit;
+using Microsoft.AspNetCore.SignalR;
 using Ocelot.Infrastructure;
 
 

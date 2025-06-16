@@ -1,7 +1,10 @@
-﻿using EasyOrder.Application.Contracts.DTOs.Responses.Global;
+﻿using EasyOrder.Application.Contracts.DTOs;
+using EasyOrder.Application.Contracts.DTOs.Responses.Global;
+using EasyOrder.Application.Contracts.Hubs;
 using EasyOrder.Application.Contracts.Interfaces.Main;
 using EasyOrder.Application.Contracts.Interfaces.Services;
 using EasyOrder.Domain.Enums;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -12,27 +15,25 @@ namespace EasyOrder.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<PaymentService> _logger;
+        private readonly IHubContext<OrderStatusHub> _hub;
 
-        public PaymentService(
-            IUnitOfWork unitOfWork,
-            ILogger<PaymentService> logger)
+        public PaymentService(IUnitOfWork unitOfWork,ILogger<PaymentService> logger,IHubContext<OrderStatusHub> hub)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _hub = hub;
         }
 
         public async Task<BaseApiResponse> ChargePaymenyAsync(PaymentMethod paymentMethod, decimal amount, int orderId)
         {
             try
             {
-                // Simulate external payment processing
                 await Task.Delay(1000);
                 var paymentSuccess = true;
 
                 if (!paymentSuccess)
                     return ErrorResponse.BadRequest("Payment gateway rejected the transaction");
 
-                // 1) Fetch the order
                 var order = await _unitOfWork.OrdersRepository.GetAsync(x => x.Id == orderId);
                 if (order == null)
                 {
@@ -40,14 +41,14 @@ namespace EasyOrder.Application.Services
                     return ErrorResponse.BadRequest($"Order with ID {orderId} does not exist");
                 }
 
-                // 2) Update its status
                 order.Status = OrderStatus.Paid;
                 _unitOfWork.OrdersRepository.Update(order);
 
-                // 3) Save changes
                 await _unitOfWork.SaveChangesAsync();
 
-                // 4) Return success
+                await _hub.Clients.Group($"order_{orderId}")
+                    .SendAsync("OrderStatusUpdated", new OrderStatusSignalDto { OrderId = order.Id, Status = order.Status.ToString() });
+
                 var msg = paymentMethod == PaymentMethod.Cash
                     ? "Payment processed successfully"
                     : "Payment processed successfully via Card";

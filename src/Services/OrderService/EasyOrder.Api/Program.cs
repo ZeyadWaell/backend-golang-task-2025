@@ -2,6 +2,7 @@
 using EasyOrder.Api.Middelware;
 using EasyOrder.Application.Command.Handlers.Admin;
 using EasyOrder.Application.Command.Handlers.Order;
+using EasyOrder.Application.Contracts.Hubs;
 using EasyOrder.Application.Queries.Handlers.Admin;
 using EasyOrder.Application.Queries.Handlers.Order;
 using EasyOrder.Application.Queries.Mappings;
@@ -65,6 +66,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<OrderStatusHub>("/hubs/orderStatus");
 app.UseHangfireDashboard("/hangfire", new DashboardOptions
 {
     Authorization = new[] { new AllowAllDashboardAuthorizationFilter() }
