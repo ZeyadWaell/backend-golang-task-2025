@@ -48,16 +48,16 @@ BackendSolution
 │           ├── EasyOrderIdentity.Infrastructure
 │           └── IdentityService.Tests  # Unit & integration tests for IdentityService
 │
-├── Shared
-│   └── Common Auth, DTOs, Logging, Extensions
+├
+│   
 │
 ├── API Gateway
 │   └── Ocelot configuration (Swagger merge, routing, rate limiting)
 │
 ├── docker
-│   └── docker-compose.yml, Dockerfiles, .env
-│
-└── (tests moved into each service as shown above)
+    └── docker-compose.yml
+
+
 ```
 
 ---
@@ -75,6 +75,7 @@ BackendSolution
 ---
 
 ## 📖 Domain Entities & Class Diagram
+
 
 We define core models with soft-delete, concurrency controls, and relationships.
 
@@ -187,7 +188,6 @@ Controllers remain minimal, handling only routing, rate limiting, and response s
 * **Factory Pattern**: Dynamically constructs instances (e.g., repository factories).
 * **Adapter Pattern**: Wraps external SDKs (e.g., payment gateways) into internal interfaces (`IPaymentClient`).
 * **Outbox Pattern**: Persists domain events in an outbox table for reliable asynchronous dispatch.
-* **Singleton Pattern**: Shared application settings (`IOptions<T>`) and single-instance services.
 
 ### 💳 Behavioral Design Patterns
 
@@ -241,6 +241,9 @@ To apply promotions and loyalty incentives:
 ---
 
 ## 👥 Data Seeding
+
+Email : admin@example.com
+Password : Admin123!
 
 Default roles and users are seeded at application startup.
 
