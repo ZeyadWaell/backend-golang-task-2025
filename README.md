@@ -56,8 +56,6 @@ BackendSolution
 │
 ├── docker
     └── docker-compose.yml
-
-
 ```
 
 ---
@@ -75,7 +73,6 @@ BackendSolution
 ---
 
 ## 📖 Domain Entities & Class Diagram
-
 
 We define core models with soft-delete, concurrency controls, and relationships.
 
@@ -154,26 +151,106 @@ All entities inherit from `BaseSoftIntDelete` or `BaseSoftDelete` (timestamps, a
 * **Query Side**: Reads served by optimized projections in `Application.Queries`.
 * **Atomic Transactions**: Commands wrap updates across aggregates and external gRPC calls.
 
+### ⚡️ Read/Write Database Strategy & Async Data Synchronization
+
+To support **CQRS**, we maintain separate **Write** and **Read** databases:
+
+* **WriteDb**: Handles all transactional commands (INSERT/UPDATE/DELETE) without added read-side indexing overhead.
+* **ReadDb**: Serves optimized queries with freely created nonclustered indexes and projections.
+
+Changes in the WriteDb are propagated **asynchronously** to the ReadDb via **SQL Server triggers** on relevant tables. These triggers capture `INSERT`, `UPDATE`, and `DELETE` operations and apply them to the ReadDb to keep data in sync.
+
+#### Example: Product Trigger
+
+```sql
+USE [EasyOrder_WriteDb]
+GO
+-- Trigger: Sync changes from WriteDb.Product to ReadDb.Product
+ALTER TRIGGER [dbo].[trg_SyncProduct]
+ON [dbo].[Product]
+AFTER INSERT, UPDATE, DELETE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    -- 1) Insert new products
+    SET IDENTITY_INSERT [EasyOrder_ReadDb].dbo.Product ON;
+    INSERT INTO [EasyOrder_ReadDb].dbo.Product
+      (...columns...)
+    SELECT ... FROM inserted AS I
+    LEFT JOIN [EasyOrder_ReadDb].dbo.Product AS R ON R.Id = I.Id
+    WHERE R.Id IS NULL;
+    SET IDENTITY_INSERT [EasyOrder_ReadDb].dbo.Product OFF;
+    -- 2) Update existing products
+    UPDATE R SET ...
+    FROM [EasyOrder_ReadDb].dbo.Product AS R
+    JOIN inserted AS I ON R.Id = I.Id;
+    -- 3) Soft-delete removed products
+    UPDATE R SET R.IsDeleted = 1, R.DeletedOn = GETDATE(), R.ModifiedOn = GETDATE()
+    FROM [EasyOrder_ReadDb].dbo.Product AS R
+    JOIN deleted AS D ON R.Id = D.Id
+    WHERE NOT EXISTS (SELECT 1 FROM inserted AS I2 WHERE I2.Id = D.Id);
+END;
+```
+
+#### Other Entity Triggers
+
+**ProductItem** (`trg_SyncProductItem` on `ProductItem`)
+
+```sql
+-- Similar INSERT/UPDATE/DELETE logic between WriteDb.ProductItem and ReadDb.ProductItem
+ALTER TRIGGER [dbo].[trg_SyncProductItem] ON [dbo].[ProductItem] AFTER INSERT, UPDATE, DELETE AS BEGIN ... END;
+```
+
+**Variation** (`trg_SyncVariation` on `Variation`)
+
+```sql
+-- Sync Variation table changes
+ALTER TRIGGER [dbo].[trg_SyncVariation] ON [dbo].[Variation] AFTER INSERT, UPDATE, DELETE AS BEGIN ... END;
+```
+
+**OrderItems** (`trg_SyncOrderItems` on `OrderItems` in `OrderWriteDb`)
+
+```sql
+-- Sync OrderItems with soft-delete and identity insert
+ALTER TRIGGER [dbo].[trg_SyncOrderItems] ON [dbo].[OrderItems] AFTER INSERT, UPDATE, DELETE AS BEGIN ... END;
+```
+
+**Orders** (`trg_SyncOrders` on `Orders` in `OrderWriteDb`)
+
+```sql
+-- Sync Orders changes including status, amounts, dates
+ALTER TRIGGER [dbo].[trg_SyncOrders] ON [dbo].[Orders] AFTER INSERT, UPDATE, DELETE AS BEGIN ... END;
+```
+
+**Payments** (`trg_SyncPayments` on `Payments` in `OrderWriteDb`)
+
+```sql
+-- Sync Payments with GUID keys
+ALTER TRIGGER [dbo].[trg_SyncPayments] ON [dbo].[Payments] AFTER INSERT, UPDATE, DELETE AS BEGIN ... END;
+```
+
+---
+
 ### 🔄 Mediator Pattern
 
 * **MediatR** is used to decouple request handlers from controllers.
 * Controllers act as thin adapters: they map HTTP/gRPC requests to commands or queries and pass them to `_mediator.Send(...)`.
 * Example in a controller using CQRS, Rate Limiting, and Mediator:
 
-  ```csharp
-  [HttpPost(OrderRoutes.Create)]
-  [EnableRateLimiting("FixedPolicy")]
-  public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto dto)
-  {
-      var command = new CreateOrderCommand(dto);
-      var response = await _mediator.Send(command);
-      return StatusCode(response.StatusCode, response);
-  }
-  ```
+```csharp
+[HttpPost(OrderRoutes.Create)]
+[EnableRateLimiting("FixedPolicy")]
+public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto dto)
+{
+    var command = new CreateOrderCommand(dto);
+    var response = await _mediator.Send(command);
+    return StatusCode(response.StatusCode, response);
+}
+```
 
 Controllers remain minimal, handling only routing, rate limiting, and response statuses.
 
-### 🧱 Clean Architecture & Separation of Concerns & Separation of Concerns
+### 🧱 Clean Architecture & Separation of Concerns
 
 * **Controllers/Endpoints**: Handle only input validation/mapping and output formatting.
 * **Services/Handlers**: Contain all business logic in the service layer, not in controllers.
@@ -199,17 +276,17 @@ Controllers remain minimal, handling only routing, rate limiting, and response s
 * Converts uncaught exceptions into standardized API responses (e.g., `ProblemDetails`).
 * Logs errors centrally and returns consistent error shapes:
 
-  ```csharp
-  app.UseMiddleware<ErrorHandlingMiddleware>();
-  ```
+```csharp
+app.UseMiddleware<ErrorHandlingMiddleware>();
+```
 
 ---
 
-## 🔄 EF Core Interceptors & SaveChanges Hook & SaveChanges Hook
+## 🔄 EF Core Interceptors & SaveChanges Hook
 
 A custom interceptor enforces:
 
-* **Permission Checks**: Validates of same user or same team before saving and converint linq to sql syntax
+* **Permission Checks**: Validates of same user or same team before saving and converting linq to sql syntax
 * **Audit Logging**: Populates `CreatedOn`, `ModifiedOn`, `CreatedBy`, `ModifiedBy`.
 
 ```csharp
@@ -242,7 +319,7 @@ To apply promotions and loyalty incentives:
 
 ## 👥 Data Seeding
 
-Email : admin@example.com
+Email : [admin@example.com](mailto:admin@example.com)
 Password : Admin123!
 
 Default roles and users are seeded at application startup.
@@ -251,68 +328,37 @@ Default roles and users are seeded at application startup.
 
 ## 📬 gRPC Communication
 
-| From → To                           | Purpose                        |
-| ----------------------------------- | ------------------------------ |
-| **OrderService → InventoryService** | Reserve or release stock       |
-| **InventoryService → OrderService** | Confirm availability           |
+| From → To                           | Purpose                  |
+| ----------------------------------- | ------------------------ |
+| **OrderService → InventoryService** | Reserve or release stock |
+| **InventoryService → OrderService** | Confirm availability     |
 
 ---
 
-## 📦 Docker & CI/CD
+## 🔔 Live Status Updates via SignalR Hub
 
-### Prerequisites
+To provide real-time feedback to clients, the system broadcasts order and inventory status updates via a **SignalR hub** channel:
 
-* [.NET 8 SDK](https://dotnet.microsoft.com/download)
-* [Docker & Docker Compose](https://www.docker.com)
+* **Order Creation Status**: When a new order is created in `OrderService`, it publishes an `OrderCreated` event to the SignalR hub channel (`OrderHub`). Clients subscribed to this channel receive live updates about the order status (e.g., Pending, Confirmed, Paid).
+* **Live Inventory Check**: `ProductInventoryService` listens for order events and performs a live inventory availability check, then sends an `InventoryStatus` update via the same SignalR hub channel to notify clients if items are in stock or backordered.
 
-### Local Setup
+## ⚡️ Response Caching
 
-```bash
-# Clone repository
-git clone https://github.com/your-org/BackendSolution.git
-cd BackendSolution
-# Configure environment variables
-cp docker/.env.example docker/.env
-# Build & run
-docker-compose up --build
-```
+In `ProductService`, we leverage **IMemoryCache** to store paginated product listings (keyed by page number and page size) for **x minutes**. AutoMapper maps domain entities to response DTOs before caching.
 
-### Running Tests
 
-```bash
-cd src/Services/OrderService
+## 🧹 Cache Invalidation
 
-dotnet test OrderService.Tests
+Cache entries are evicted whenever products are created or updated:
 
-cd ../ProductInventoryService
+* **On Create**: After `CreateProductAsync`, we call `EvictPage(1,10)` to clear the first page.
+* **On Update**: In `UpsertAsync`, we calculate which page contains the updated product and evict only that page via `EvictPageContainingProductAsync(product.Id)`.
 
-dotnet test ProductInventoryService.Tests
 
-cd ../IdentityService
-
-dotnet test IdentityService.Tests
-```
-
----
-
-## 🛠 Environment Variables
-
-Configure `.env` per service:
-
-```dotenv
-# DB
-DATABASE__CONNECTIONSTRING=Server=...;Database=...;User=...;Password=...
-# OrderService
-dotnet_order__grpc__port=5001
-# InventoryService
-dotnet_inventory__grpc__port=5002
-# IdentityService
-identity__jwt__key=YourSuperSecretKey
-identity__jwt__issuer=YourIssuer
-```
-
----
+This approach ensures that cached product pages remain consistent and fresh when data changes.
 
 ## 📜 License
+
+Licensed under the MIT License. See [LICENSE](LICENSE) for details.## 📜 License
 
 Licensed under the MIT License. See [LICENSE](LICENSE) for details.
