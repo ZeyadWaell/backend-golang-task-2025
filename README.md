@@ -304,7 +304,7 @@ options.AddInterceptors(new AuditAndPermissionInterceptor(currentUserService));
 
 ## 🤝 Payment Processing & Hangfire
 
-1. **Charge Request**: `OrderService` calls `PaymentService` via gRPC.
+1. **Charge Request**: `OrderService` calls `PaymentService` via hangfire
 2. **Retry Mechanism**: Hangfire jobs retry on transient failures using exponential backoff.
 3. **Success Handling**: On successful payment, update `Order.PaidAt` and `Status`.
 4. **Failure Handling**: After configurable retries, log audit entry and alert administrators.
