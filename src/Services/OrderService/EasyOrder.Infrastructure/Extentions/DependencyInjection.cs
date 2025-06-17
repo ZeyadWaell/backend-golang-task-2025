@@ -72,6 +72,8 @@ options.UseSqlServer(configuration.GetConnectionString("HangfireConnection"),
             }
 )
 );
+            services.AddSignalR();
+
             services.AddHangfireServer();
         }
         //private static void AddingMessaging(IServiceCollection services, IConfiguration configuration)

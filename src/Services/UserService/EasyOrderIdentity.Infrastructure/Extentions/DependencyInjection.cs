@@ -28,6 +28,7 @@ namespace EasyOrderIdentity.Infrastructure.ProgramServices
         {
             // register your interceptor here
             services.AddScoped<AuditableEntityInterceptor>();
+            services.AddSignalR();
 
             // other application services
             services.AddScoped<IOwnershipService, OwnershipService>();

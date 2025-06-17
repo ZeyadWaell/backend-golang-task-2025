@@ -50,25 +50,88 @@ public class InventoryCheckerService : InventoryChecker.InventoryCheckerBase
             Message = reserved ? "Reservation successful" : "Insufficient stock for reservation"
         };
     }
-    public override async Task<InventoryResponse> ReserveInventory(QuantityRequest request, ServerCallContext context)
+    public override async Task<InventoryResponse> ReserveInventory(QuantityRequest request,ServerCallContext context)
     {
-        var productItemCheck = await _unitOfWork.ProductItemRepository.AnyAsync(x => x.Id == request.ProductItemId);
-        if (!productItemCheck)
-            throw new RpcException(new Status(StatusCode.NotFound, $"Product item with ID {request.ProductItemId} not found"));
+        try
+        {
+            await EnsureProductExistsAsync(request.ProductItemId);
+            var updated = await TryIncrementInventoryAsync(request.ProductItemId, request.Quantity);
 
-        await _unitOfWork.InventoryRepository.IncrementAsync(request.ProductItemId, request.Quantity);
+            if (!updated)
+                throw new RpcException(new Status(
+                    StatusCode.Internal,
+                    "Unable to update inventory – record not found."));
 
-        await _hub.Clients.Group($"product_{request.ProductItemId}")
-                .SendAsync("InventoryUpdated", new InventoryDto
-                {
-                    ProductItemId = request.ProductItemId,
-                    QuantityOnHand = request.Quantity,
-                    WarehouseLocation = "Remote work i hope in Easy Order "
-                });
-        return new InventoryResponse
+            await SafeNotifyClientsAsync(request);
+
+            return CreateSuccessResponse();
+        }
+        catch (RpcException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error in ReserveInventory for ProductId={ProductId}", request.ProductItemId);
+            throw new RpcException(new Status(
+                StatusCode.Internal,
+                "An unexpected error occurred while reserving inventory."));
+        }
+    }
+
+    #region ─── Private Helpers ─────────────────────────────────────────────────────
+
+    private async Task EnsureProductExistsAsync(int productItemId)
+    {
+        var exists = await _unitOfWork.ProductItemRepository
+                                     .AnyAsync(x => x.Id == productItemId);
+
+        if (!exists)
+            throw new RpcException(new Status(
+                StatusCode.NotFound,
+                $"Product item with ID {productItemId} not found"));
+    }
+
+    private async Task<bool> TryIncrementInventoryAsync(int productItemId, int qty)
+    {
+        var rows = await _unitOfWork.InventoryRepository
+                                     .IncrementAsync(productItemId, qty);
+
+        return rows;
+    }
+
+    private async Task SafeNotifyClientsAsync(QuantityRequest request)
+    {
+        try
+        {
+            await _hub.Clients
+                      .Group(GetGroupName(request.ProductItemId))
+                      .SendAsync("InventoryUpdated", new InventoryDto
+                      {
+                          ProductItemId = request.ProductItemId,
+                          QuantityOnHand = request.Quantity,
+                          WarehouseLocation = "Remote work i hope in Easy Order"
+                      });
+        }
+        catch (Exception hubEx)
+        {
+            _logger.LogWarning(hubEx,
+                "SignalR notification failed for ProductId={ProductId}",
+                request.ProductItemId);
+            // swallow—don't let SignalR failures break gRPC response
+        }
+    }
+
+    private InventoryResponse CreateSuccessResponse()
+        => new InventoryResponse
         {
             IsAvailable = true,
             Message = "Inventory incremented successfully"
         };
-    }
+
+    private static string GetGroupName(int productItemId)
+        => $"product_{productItemId}";
+
+    #endregion
+
 }

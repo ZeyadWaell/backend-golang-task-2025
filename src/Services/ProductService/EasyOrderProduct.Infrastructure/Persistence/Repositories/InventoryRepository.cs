@@ -27,12 +27,24 @@ namespace EasyOrderProduct.Infrastructure.Persistence.Repositories
             return affected > 0;
         }
 
-        public async Task IncrementAsync(int productItemId, int qty)
+        public async Task<bool> IncrementAsync(int productItemId, int qty)
         {
-             await _readContext.inventories
-                .Where(i => i.ProductItemId == productItemId)
+            var exists = await _readContext.inventories
+                .AnyAsync(i => i.ProductItemId == productItemId);
+
+            if (!exists)
+                return false;
+
+            var updatedRows = await _readContext.inventories
+                .Where(i => i.ProductItemId == productItemId && i.QuantityOnHand >= qty)
                 .ExecuteUpdateAsync(b => b
-                    .SetProperty(i => i.QuantityOnHand, i => i.QuantityOnHand + qty));
+                    .SetProperty(
+                        i => i.QuantityOnHand,
+                        i => i.QuantityOnHand + qty
+                    )
+                );
+
+            return updatedRows > 0;
         }
         public async Task<BaseApiResponse> GetLowStockAsync()
         {

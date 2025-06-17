@@ -9,6 +9,6 @@ namespace EasyOrderProduct.Application.Contract.Interfaces.Repository
     {
         Task<BaseApiResponse> GetLowStockAsync();
         Task<bool> TryReserveAsync(int productItemId, int qty);
-        Task IncrementAsync(int productItemId, int qty);
+        Task<bool> IncrementAsync(int productItemId, int qty);
     }
 }

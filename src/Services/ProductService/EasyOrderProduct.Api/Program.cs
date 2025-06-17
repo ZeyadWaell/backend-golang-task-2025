@@ -6,6 +6,7 @@ using EasyOrderProduct.Application.Contracts.Mapping;
 using EasyOrderProduct.Application.Queries.Handlers;
 using EasyOrderProduct.Infrastructure.Extentions;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Ocelot.Values;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,8 @@ builder.Services
     .AddJwtAuthentication(builder.Configuration)
     .AddSwaggerWithJwt()
     .AddControllers();
+
+builder.Services.AddSignalR();
 
 builder.Services.AddGrpc();
 
@@ -55,7 +58,7 @@ builder.WebHost.ConfigureKestrel(opts =>
 
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+//app//.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // 1) expose swagger.json
 app.UseSwagger();
