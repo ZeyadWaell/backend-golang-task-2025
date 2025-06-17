@@ -80,6 +80,14 @@ We define core models with soft-delete, concurrency controls, and relationships.
 classDiagram
     class Inventory {
         +int Id
+        +string RequestPath
+        +string RequestBody
+        +string Response
+        +int ResponseCode
+        +DateTime CreatedAt
+    }
+    class Inventory {
+        +int Id
         +int ProductItemId
         +int QuantityOnHand
         +string WarehouseLocation
