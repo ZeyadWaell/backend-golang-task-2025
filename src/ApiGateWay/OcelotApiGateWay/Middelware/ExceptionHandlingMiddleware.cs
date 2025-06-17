@@ -82,11 +82,6 @@ namespace OcelotApiGateWay.Middelware
                     responseBody,
                     statusCode));
             }
-            _jobs.Enqueue<AuditLogJob>(job => job.SaveAsync(
-                context.Request.Path,
-                requestBody,
-                responseBody,
-                statusCode));
         }
         
 
