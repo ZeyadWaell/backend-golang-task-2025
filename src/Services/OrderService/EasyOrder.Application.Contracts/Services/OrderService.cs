@@ -63,6 +63,12 @@ namespace EasyOrder.Application.Queries.Services
             return new SuccessResponse<object>("Got Order", dto, 200);
         }
 
+        public async Task<BaseApiResponse> CreateOrderWaterPoolAsync(CreateOrderDto dto)
+        {
+            _jobs.Enqueue<CreatingOrderWaterPoolJob>(job => job.ExecuteAsync(dto));
+
+            return new SuccessResponse<object>("Order created successfully", "", 201);
+        }
         public async Task<BaseApiResponse> CreateOrderAsync(CreateOrderDto dto)
         {
             if (dto == null)
@@ -92,12 +98,12 @@ namespace EasyOrder.Application.Queries.Services
             await _unitOfWork.OrdersRepository.AddAsync(order);
             await _unitOfWork.SaveChangesAsync();
 
-            _jobs.Enqueue<ChargePaymentJob>(job => job.ExecuteAsync(dto.Payment.Method, order.TotalAmount, order.Id));
+           _jobs.Enqueue<ChargePaymentJob>(job => job.ExecuteAsync(dto.Payment.Method, order.TotalAmount, order.Id));
 
             return new SuccessResponse<object>(
                 "Order created successfully",
                 order.Id,
-                200
+                201
             );
         }
 

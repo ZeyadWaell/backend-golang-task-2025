@@ -40,14 +40,25 @@ public class InventoryCheckerService : InventoryChecker.InventoryCheckerBase
     }
     public override async Task<InventoryResponse> ReleaseInventory(QuantityRequest request, ServerCallContext context)
     {
-        var productItemCheck = await _unitOfWork.ProductItemRepository.AnyAsync(x => x.Id == request.ProductItemId);
-        if (!productItemCheck)
-            throw new RpcException(new Status(StatusCode.NotFound, $"Product item with ID {request.ProductItemId} not found"));
-        var reserved = await _unitOfWork.InventoryRepository.TryReserveAsync(request.ProductItemId, request.Quantity);
+        var reserved = await _unitOfWork.InventoryRepository
+            .TryReserveAsync(request.ProductItemId, request.Quantity);
+
+        if (!reserved)
+        {
+            throw new RpcException(new Status(
+                StatusCode.FailedPrecondition,
+                "Insufficient stock for reservation"
+            ));
+        }
+
+        // 2) Fire-and-forget the SignalR notification
+        _ = SafeNotifyClientsAsync(request);
+
+        // 3) Return immediately
         return new InventoryResponse
         {
-            IsAvailable = reserved,
-            Message = reserved ? "Reservation successful" : "Insufficient stock for reservation"
+            IsAvailable = true,
+            Message = "Inventory reserved successfully"
         };
     }
     public override async Task<InventoryResponse> ReserveInventory(QuantityRequest request,ServerCallContext context)
@@ -110,7 +121,7 @@ public class InventoryCheckerService : InventoryChecker.InventoryCheckerBase
                       {
                           ProductItemId = request.ProductItemId,
                           QuantityOnHand = request.Quantity,
-                          WarehouseLocation = "Remote work i hope in Easy Order"
+                          WarehouseLocation = "Remote warehouse"
                       });
         }
         catch (Exception hubEx)
@@ -118,7 +129,6 @@ public class InventoryCheckerService : InventoryChecker.InventoryCheckerBase
             _logger.LogWarning(hubEx,
                 "SignalR notification failed for ProductId={ProductId}",
                 request.ProductItemId);
-            // swallow—don't let SignalR failures break gRPC response
         }
     }
 

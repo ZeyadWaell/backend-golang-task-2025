@@ -38,7 +38,7 @@ namespace EasyOrder.Api.Controllers
         }
 
         [HttpPost(OrderRoutes.Create)]
-        [EnableRateLimiting("FixedPolicy")]      
+      //  [EnableRateLimiting("FixedPolicy")]      
 
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto dto)
         {

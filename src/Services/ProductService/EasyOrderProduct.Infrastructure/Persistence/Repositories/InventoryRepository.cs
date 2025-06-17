@@ -20,31 +20,24 @@ namespace EasyOrderProduct.Infrastructure.Persistence.Repositories
         }
         public async Task<bool> TryReserveAsync(int productItemId, int qty)
         {
-            var affected = await _readContext.inventories
+            var affected = await _writeContext.inventories
                 .Where(i => i.ProductItemId == productItemId && i.QuantityOnHand >= qty)
-                .ExecuteUpdateAsync(b => b
-                    .SetProperty(i => i.QuantityOnHand, i => i.QuantityOnHand - qty));
+                .ExecuteUpdateAsync(upd => upd
+                    .SetProperty(i => i.QuantityOnHand, i => i.QuantityOnHand - qty)
+                );
+
             return affected > 0;
         }
 
         public async Task<bool> IncrementAsync(int productItemId, int qty)
         {
-            var exists = await _readContext.inventories
-                .AnyAsync(i => i.ProductItemId == productItemId);
-
-            if (!exists)
-                return false;
-
-            var updatedRows = await _readContext.inventories
-                .Where(i => i.ProductItemId == productItemId && i.QuantityOnHand >= qty)
-                .ExecuteUpdateAsync(b => b
-                    .SetProperty(
-                        i => i.QuantityOnHand,
-                        i => i.QuantityOnHand + qty
-                    )
+            var affected = await _writeContext.inventories
+                .Where(i => i.ProductItemId == productItemId)
+                .ExecuteUpdateAsync(upd => upd
+                    .SetProperty(i => i.QuantityOnHand, i => i.QuantityOnHand + qty)
                 );
 
-            return updatedRows > 0;
+            return affected > 0;
         }
         public async Task<BaseApiResponse> GetLowStockAsync()
         {

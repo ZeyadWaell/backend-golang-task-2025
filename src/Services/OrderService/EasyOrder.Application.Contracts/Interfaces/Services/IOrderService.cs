@@ -16,5 +16,6 @@ namespace EasyOrder.Application.Contracts.Interfaces.Services
         Task<BaseApiResponse> CreateOrderAsync(CreateOrderDto dto); // Ensure CreateOrderCommand is defined in the correct namespace
         Task<BaseApiResponse> CancelOrderAsync(int id);
         Task<BaseApiResponse> GetOrderStatus(int id);
+        Task<BaseApiResponse> CreateOrderWaterPoolAsync(CreateOrderDto dto);
     }
 }

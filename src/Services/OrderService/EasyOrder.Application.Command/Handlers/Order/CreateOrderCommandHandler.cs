@@ -16,7 +16,7 @@ namespace EasyOrder.Application.Command.Handlers.Order
 
         public async Task<BaseApiResponse> Handle(CreateOrderCommand request,CancellationToken ct)
         {
-            var result = await _orderService.CreateOrderAsync(request.OrderDto);
+            var result = await _orderService.CreateOrderWaterPoolAsync(request.OrderDto);
             return new SuccessResponse<object>(
                 "Order created successfully",
                 null,
