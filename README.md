@@ -78,7 +78,7 @@ We define core models with soft-delete, concurrency controls, and relationships.
 
 ```mermaid
 classDiagram
-    class Inventory {
+    class AuditLog {
         +int Id
         +string RequestPath
         +string RequestBody
