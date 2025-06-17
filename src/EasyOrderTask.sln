@@ -62,7 +62,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OcelotApiGateWay", "ApiGate
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{202F9D6C-480F-45A7-86EE-7D08237B7937}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Tests", "OrderServiceTests\OrderService.Tests.csproj", "{37736F2B-C4D8-4FB9-8554-FAE601652F5C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Tests", "Services\OrderService\OrderServiceTests\OrderService.Tests.csproj", "{37736F2B-C4D8-4FB9-8554-FAE601652F5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
