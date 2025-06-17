@@ -242,8 +242,7 @@ ALTER TRIGGER [dbo].[trg_SyncPayments] ON [dbo].[Payments] AFTER INSERT, UPDATE,
 ### 🔄 Mediator Pattern
 
 * **MediatR** is used to decouple request handlers from controllers.
-* Controllers act as thin adapters: they map HTTP/gRPC requests to commands or queries and pass them to `_mediator.Send(...)`.
-* Example in a controller using CQRS, Rate Limiting, and Mediator:
+* Controllers act as thin adapters: they map requests to commands or queries and pass them to `_mediator.Send(...)`.
 
 ```csharp
 [HttpPost(OrderRoutes.Create)]
