@@ -35,6 +35,18 @@ namespace EasyOrder.Api.Middelware
             try
             {
                 await _next(context);
+
+                if (context.Response.StatusCode == StatusCodes.Status429TooManyRequests)
+                {
+                    _logger.LogWarning("Rate limit exceeded on {Path}", context.Request.Path);
+
+                    buffer.SetLength(0);
+
+                    await WriteErrorResponseAsync(
+                        context,
+                        StatusCodes.Status429TooManyRequests,
+                        ErrorResponse.TooManyRequests("Too many requests. Please try again later."));
+                }
             }
             catch (UnauthorizedAccessException uaEx)
             {
@@ -54,6 +66,7 @@ namespace EasyOrder.Api.Middelware
             }
             finally
             {
+                // rewind and copy the buffer (either original or your custom payload) to the real response stream
                 buffer.Seek(0, SeekOrigin.Begin);
                 await buffer.CopyToAsync(originalBody);
                 context.Response.Body = originalBody;

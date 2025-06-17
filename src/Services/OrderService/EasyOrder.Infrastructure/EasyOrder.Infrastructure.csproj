@@ -54,9 +54,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\UserService\EasyOrderIdentity.Infrastructure\EasyOrderIdentity.Infrastructure.csproj" />
-    <ProjectReference Include="..\EasyOrder.Application.Queries\EasyOrder.Application.Queries.csproj" />
-    <ProjectReference Include="..\EasyOrder.Domain\EasyOrder.Domain.csproj" />
+    <ProjectReference Include="..\EasyOrder.Application.Contracts\EasyOrder.Application.Contracts.csproj" />
   </ItemGroup>
+
+
 
 </Project>

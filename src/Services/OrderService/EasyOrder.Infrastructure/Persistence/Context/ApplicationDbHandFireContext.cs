@@ -1,5 +1,4 @@
 ﻿using Castle.Core.Configuration;
-using EasyOrderIdentity.Infrastructure.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

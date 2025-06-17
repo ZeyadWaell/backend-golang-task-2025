@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -21,9 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EasyOrderIdentity.Application.Command\EasyOrderIdentity.Application.csproj" />
     <ProjectReference Include="..\EasyOrderIdentity.Application\EasyOrderIdentity.Application.csproj" />
     <ProjectReference Include="..\EasyOrderIdentity.Infrastructure\EasyOrderIdentity.Infrastructure.csproj" />
   </ItemGroup>
+
+
 
 </Project>

@@ -56,7 +56,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderIdentity.Domain", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderIdentity.Infrastructure", "Services\UserService\EasyOrderIdentity.Infrastructure\EasyOrderIdentity.Infrastructure.csproj", "{BCB06D06-9048-4A77-A3F3-3BEC90C5E566}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderProduct.Application.Contract", "Services\ProductService\EasyOrderProduct.Application.Contracts\EasyOrderProduct.Application.Contract.csproj", "{9F28E4D1-F3E0-4AE4-BF75-29AFF0A6FBDF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyOrderProduct.Application.Contract", "Services\ProductService\EasyOrderProduct.Application.Contract\EasyOrderProduct.Application.Contract.csproj", "{9F28E4D1-F3E0-4AE4-BF75-29AFF0A6FBDF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OcelotApiGateWay", "ApiGateWay\OcelotApiGateWay\OcelotApiGateWay.csproj", "{19185B05-80F5-4EBA-9D79-708C98A2F860}"
 EndProject

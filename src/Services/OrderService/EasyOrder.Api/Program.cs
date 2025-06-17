@@ -30,8 +30,8 @@ builder.Services.AddRateLimiter(options =>
         policyName: "FixedPolicy",
         options =>
         {
-            options.PermitLimit = 10;
-            options.Window = TimeSpan.FromMinutes(1);
+            options.PermitLimit = 3;
+            options.Window = TimeSpan.FromMinutes(2);
             options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
             options.QueueLimit = 0;
         });
@@ -65,6 +65,8 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
+
 app.MapControllers();
 app.MapHub<OrderStatusHub>("/hubs/orderStatus");
 app.UseHangfireDashboard("/hangfire", new DashboardOptions

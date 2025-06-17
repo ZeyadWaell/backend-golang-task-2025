@@ -16,6 +16,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="MediatR" Version="12.5.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
@@ -29,9 +30,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EasyOrderProduct.Application.Commands\EasyOrderProduct.Application.Command.csproj" />
-    <ProjectReference Include="..\EasyOrderProduct.Application.Contracts\EasyOrderProduct.Application.Contract.csproj" />
     <ProjectReference Include="..\EasyOrderProduct.Application.Queries\EasyOrderProduct.Application.Queries.csproj" />
     <ProjectReference Include="..\EasyOrderProduct.Infrastructure\EasyOrderProduct.Infrastructure.csproj" />
   </ItemGroup>
+
+
 
 </Project>
